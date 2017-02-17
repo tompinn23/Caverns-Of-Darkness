@@ -57,18 +57,18 @@ namespace PythonRouge.game
                 {
                     case TileType.Floor:
                         if (tile.lit)
-                            mapConsole.Set(pos.Item1, pos.Item2, Colours.floor_lit, Colours.floor_lit, tile.symbol);
+                            mapConsole.Set(pos.x, pos.y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
                         else
-                            mapConsole.Set(pos.Item1, pos.Item2, Colours.floor, Colours.floor, tile.symbol);
+                            mapConsole.Set(pos.x, pos.y, Colours.floor, Colours.floor, tile.symbol);
                         break;
                     case TileType.Wall:
                         if (tile.lit)
-                            mapConsole.Set(pos.Item1, pos.Item2, Colours.wall_lit, Colours.wall_lit, tile.symbol);
+                            mapConsole.Set(pos.x, pos.y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
                         else
-                            mapConsole.Set(pos.Item1, pos.Item2, Colours.wall, Colours.wall, tile.symbol);
+                            mapConsole.Set(pos.x, pos.y, Colours.wall, Colours.wall, tile.symbol);
                         break;
                     case TileType.Empty:
-                        mapConsole.Set(pos.Item1, pos.Item2, RLColor.Black, RLColor.Black, tile.symbol);
+                        mapConsole.Set(pos.x, pos.y, RLColor.Black, RLColor.Black, tile.symbol);
                         break;
                 }
             }

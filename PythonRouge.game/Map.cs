@@ -38,7 +38,7 @@ namespace PythonRouge.game
         {
             for (var x = 0; x < mapWidth; x++)
             for (var y = 0; y < mapHeight; y++)
-                grid.Game_map[new Tuple<int, int>(x, y)] = new Tile(x, y, TileType.Wall);
+                grid.Game_map[new Vector2(x, y)] = new Tile(x, y, TileType.Wall);
         }
 
         public void resetLight()
@@ -51,7 +51,7 @@ namespace PythonRouge.game
         {
             try
             {
-                if (grid.Game_map[new Tuple<int, int>(pos.x + dx, pos.y + dy)].type == TileType.Wall)
+                if (grid.Game_map[new Vector2(pos.x + dx, pos.y + dy)].type == TileType.Wall)
                 {
                     return false;
 
@@ -72,27 +72,27 @@ namespace PythonRouge.game
         {
             foreach (var kvp in grid.Game_map)
                 if (kvp.Value.type == TileType.Floor)
-                    return new EntityPos(kvp.Key.Item1, kvp.Key.Item2);
+                    return new EntityPos(kvp.Key.x, kvp.Key.y);
             return new EntityPos(0, 0);
         }
 
-        public bool NeighboursIsNotFloor(Tuple<int, int> pos)
+        public bool NeighboursIsNotFloor(Vector2 pos)
         {
-            var offsets = new List<Tuple<int, int>>
+            var offsets = new List<Vector2>
             {
-                new Tuple<int, int>(-1, -1),
-                new Tuple<int, int>(-1, 0),
-                new Tuple<int, int>(-1, 1),
-                new Tuple<int, int>(0, -1),
-                new Tuple<int, int>(0, 1),
-                new Tuple<int, int>(1, -1),
-                new Tuple<int, int>(1, 0),
-                new Tuple<int, int>(1, 1)
+                new Vector2(-1, -1),
+                new Vector2(-1, 0),
+                new Vector2(-1, 1),
+                new Vector2(0, -1),
+                new Vector2(0, 1),
+                new Vector2(1, -1),
+                new Vector2(1, 0),
+                new Vector2(1, 1)
             };
             foreach (var offset in offsets)
                 try
                 {
-                    if (grid.Game_map[new Tuple<int, int>(pos.Item1 + offset.Item1, pos.Item2 + offset.Item2)].type ==
+                    if (grid.Game_map[new Vector2(pos.x + offset.x, pos.y + offset.y)].type ==
                         TileType.Floor)
                         return false;
                 }
@@ -107,7 +107,7 @@ namespace PythonRouge.game
         public void setEmpty()
         {
             foreach (var kvp in grid.Game_map)
-                if (NeighboursIsNotFloor(new Tuple<int, int>(kvp.Key.Item1, kvp.Key.Item2)))
+                if (NeighboursIsNotFloor(new Vector2(kvp.Key.x, kvp.Key.y)))
                     kvp.Value.type = TileType.Empty;
         }
 
@@ -125,7 +125,7 @@ namespace PythonRouge.game
                 .Now();
             foreach (var cell in map.AllCells)
             {
-                var pos = new Tuple<int, int>(cell.Column, cell.Row);
+                var pos = new Vector2(cell.Column, cell.Row);
                 switch (cell.Terrain)
                 {
                     case TerrainType.Door:
@@ -152,7 +152,7 @@ namespace PythonRouge.game
     [Serializable]
     public class GameGrid
     {
-        private Dictionary<Tuple<int, int>, Tile> game_map = new Dictionary<Tuple<int, int>, Tile>();
+        private Dictionary<Vector2, Tile> game_map = new Dictionary<Vector2, Tile>();
         public int xDim;
         public int yDim;
 
@@ -162,25 +162,25 @@ namespace PythonRouge.game
             yDim = h;
         }
 
-        public Dictionary<Tuple<int, int>, Tile> Game_map { get { return game_map; } set { game_map  = value; } }
+        public Dictionary<Vector2, Tile> Game_map { get { return game_map; } set { game_map  = value; } }
 
         public bool IsWall(int x, int y)
         {
-            return Game_map[new Tuple<int, int>(x, y)].type == TileType.Wall;
+            return Game_map[new Vector2(x, y)].type == TileType.Wall;
         }
 
         public void SetLight(int x, int y, float disSqrd)
         {
-            Game_map[new Tuple<int, int>(x, y)].lit = true;
+            Game_map[new Vector2(x, y)].lit = true;
         }
 
         public string mapTostring()
         {
             string[] temp = new string[game_map.Count];
             int counter = 0;
-            foreach (KeyValuePair<Tuple<int, int>, Tile> kvp in Game_map)
+            foreach (KeyValuePair<Vector2, Tile> kvp in Game_map)
             {
-                string xy = kvp.Key.Item1.ToString() + "/" + kvp.Key.Item2.ToString();
+                string xy = kvp.Key.x.ToString() + "/" + kvp.Key.y.ToString();
                 string type = null;
                 switch (kvp.Value.type)
                 {
@@ -208,7 +208,7 @@ namespace PythonRouge.game
             {
                 string[] secSep = value.Split(new char[] {':'});
                 string[] key = secSep[0].Split(new char[] {'/'});
-                var accKey = new Tuple<int, int>(int.Parse(key[0]), int.Parse(key[1]));
+                var accKey = new Vector2(int.Parse(key[0]), int.Parse(key[1]));
                 switch (secSep[1])
                 {
                     case "Empty":

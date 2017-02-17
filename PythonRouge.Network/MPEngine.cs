@@ -198,18 +198,18 @@ namespace PythonRouge.Network
                 {
                     case TileType.Floor:
                         if (tile.lit)
-                            MapConsole.Set(pos.Item1, pos.Item2, Colours.floor_lit, Colours.floor_lit, tile.symbol);
+                            MapConsole.Set(pos.x, pos.y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
                         else
-                            MapConsole.Set(pos.Item1, pos.Item2, Colours.floor, Colours.floor, tile.symbol);
+                            MapConsole.Set(pos.x, pos.y, Colours.floor, Colours.floor, tile.symbol);
                         break;
                     case TileType.Wall:
                         if (tile.lit)
-                            MapConsole.Set(pos.Item1, pos.Item2, Colours.wall_lit, Colours.wall_lit, tile.symbol);
+                            MapConsole.Set(pos.x, pos.y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
                         else
-                            MapConsole.Set(pos.Item1, pos.Item2, Colours.wall, Colours.wall, tile.symbol);
+                            MapConsole.Set(pos.x, pos.y, Colours.wall, Colours.wall, tile.symbol);
                         break;
                     case TileType.Empty:
-                        MapConsole.Set(pos.Item1, pos.Item2, RLColor.Black, RLColor.Black, tile.symbol);
+                        MapConsole.Set(pos.x, pos.y, RLColor.Black, RLColor.Black, tile.symbol);
                         break;
                     default:
                         break;
@@ -226,7 +226,8 @@ namespace PythonRouge.Network
             }
             foreach (var p in Players.Values)
             {
-                p.draw(MapConsole);
+                if (p == Players[LocalName]) p.draw(MapConsole);
+                else if (map.grid.Game_map[new Vector2(p.pos.x, p.pos.y)].lit == true) p.draw(MapConsole);
             }
         }
 

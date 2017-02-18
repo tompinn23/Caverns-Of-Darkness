@@ -10,6 +10,8 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see
 // http://www.gnu.org/licenses/.
 using RLNET;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PythonRouge.game
 {
@@ -23,12 +25,35 @@ namespace PythonRouge.game
         private readonly Player player = new Player(0, 0, 100, '@', "Tom");
         private readonly RLRootConsole rootConsole;
 
+        private bool mapLoadDone = false;
+
         public SPEngine(RLRootConsole rootConsole)
         {
             this.rootConsole = rootConsole;
             mapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
             invConsole.SetBackColor(0, 0, 20, 70, RLColor.Cyan);
             mapGenerate();
+            do
+            {
+                rootConsole.Clear();
+                mapConsole.Clear();
+                mapConsole.Print(0, 0, "Loading Map",RLColor.White);
+                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                rootConsole.Draw();
+                Thread.Sleep(200);
+                mapConsole.Print(0, 0, "Loading Map.", RLColor.White);
+                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                rootConsole.Draw();
+                Thread.Sleep(200);
+                mapConsole.Print(0, 0, "Loading Map..", RLColor.White);
+                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                rootConsole.Draw();
+                Thread.Sleep(200);
+                mapConsole.Print(0, 0, "Loading Map...", RLColor.White);
+                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                rootConsole.Draw();
+
+            } while(mapLoadDone == false);
             var pos = map.findPPos();
             player.pos = pos;
         }
@@ -41,9 +66,19 @@ namespace PythonRouge.game
             PostRender();
         }
 
-        public void mapGenerate()
+        public async void mapGenerate()
         {
-            map.generate();
+            await doMapGenerate();
+            mapLoadDone = true;
+        } 
+
+        public Task doMapGenerate()
+        {
+            return Task.Run(() =>
+            {
+                map.generate();
+            });
+            
         }
 
         public void renderMap()

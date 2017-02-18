@@ -76,6 +76,7 @@ namespace PythonRouge
                 {
                     case 1:
                         _spEngine = new SPEngine(_rootConsole);
+                        Menu.currMenu = "game";
                         break;
                     case 2:
                         Menu.currMenu = "multi";

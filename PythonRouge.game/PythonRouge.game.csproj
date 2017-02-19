@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Map.Generator.cs" />
     <Compile Include="Colours.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="FOV.cs" />

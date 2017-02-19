@@ -125,7 +125,7 @@ namespace PythonRouge.game
                 .Now();
             foreach (var cell in map.AllCells)
             {
-                var pos = new Vector2(cell.Column, cell.Row);
+                var pos = new Tuple<int, int>(cell.Column, cell.Row);
                 switch (cell.Terrain)
                 {
                     case TerrainType.Door:
@@ -147,6 +147,7 @@ namespace PythonRouge.game
             }
             setEmpty();
         }
+
     }
 
     [Serializable]
@@ -256,7 +257,8 @@ namespace PythonRouge.game
             this.x = x;
             this.y = y;
         }
-    }
+    }    
+
     [Serializable]
     public class Tile
     {
@@ -311,6 +313,8 @@ namespace PythonRouge.game
             }
             this.type = type;
         }
+        
+
     }
 
     public enum TileType
@@ -319,4 +323,4 @@ namespace PythonRouge.game
         Wall,
         Empty
     }
-}
+}   

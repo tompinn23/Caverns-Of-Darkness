@@ -27,10 +27,6 @@ namespace PythonRouge
         public static bool Multi;
         public static bool main = true;
         public static bool opts = false;
-        private static bool multiRendered = false;
-        private static bool detsEntered = false;
-        private static bool wantName;
-        private static string name = "";
         private static MPLobby _lobby;
 
         public static string FixBase64ForImage(string Image)
@@ -111,6 +107,7 @@ namespace PythonRouge
                 {
                     case 1:
                         _spEngine = new SPEngine(_rootConsole);
+                        Menu.currMenu = "game";
                         break;
                     case 2:
                         Menu.currMenu = "multi";

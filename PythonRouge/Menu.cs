@@ -70,7 +70,6 @@ namespace PythonRouge
                 {
                     case RLKey.Enter:
                         return 1;
-                        break;
                     case RLKey.Escape:
                         break;
                     case RLKey.Space:

@@ -25,10 +25,6 @@ namespace PythonRouge
         public static bool Multi;
         public static bool main = true;
         public static bool opts = false;
-        private static bool multiRendered = false;
-        private static bool detsEntered = false;
-        private static bool wantName;
-        private static string name = "";
         private static MPLobby _lobby;
 
         /// <summary>

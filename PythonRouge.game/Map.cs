@@ -125,7 +125,7 @@ namespace PythonRouge.game
                 .Now();
             foreach (var cell in map.AllCells)
             {
-                var pos = new Tuple<int, int>(cell.Column, cell.Row);
+                var pos = new Vector2(cell.Column, cell.Row);
                 switch (cell.Terrain)
                 {
                     case TerrainType.Door:

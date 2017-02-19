@@ -68,10 +68,11 @@ namespace PythonRouge
                             HaPHRRusBft5vKRevVbQoabT80X86Xf4ulXKwuF036Cqp21XmBbjOC4sskmcKR9UgTFWwONffwXOwXQ21hMMW080HwPzRXMB74g0P8duCPeqnSX0zq38AkpsLsVLOAuMAAAAASUVORK5CYII=";
             Byte[] bitmapData = Convert.FromBase64String(FixBase64ForImage(fontImage));
             MemoryStream bitMapStream = new MemoryStream(bitmapData);
-            FileStream bitFile = new FileStream("%TEMP%\rlFontFile.png", FileMode.Create);
+            FileStream bitFile = new FileStream(Path.GetTempPath() + "rlFontFile.png", FileMode.Create);
             bitMapStream.WriteTo(bitFile);
+            bitFile.Close();
             var settings = new RLSettings();
-            settings.BitmapFile = fontImage;
+            settings.BitmapFile = Path.GetTempPath() + "rlFontFile.png";
             settings.CharWidth = 8;
             settings.CharHeight = 8;
             settings.Width = 90;

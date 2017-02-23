@@ -22,7 +22,7 @@ namespace PythonRouge.game
 
         private readonly RLConsole mapConsole = new RLConsole(70, 50);
 
-        private readonly Player player = new Player(0, 0, 100, '@', "Tom");
+        private readonly Player player = new Player(0, 100, 0, '@', "Tom");
         private readonly RLRootConsole rootConsole;
 
         private bool mapLoadDone = false;

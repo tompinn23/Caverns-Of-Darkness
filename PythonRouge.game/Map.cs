@@ -47,7 +47,7 @@ namespace PythonRouge.game
                 kvp.Value.lit = false;
         }
 
-        public bool canMove(EntityPos pos, int dx, int dy)
+        public bool canMove(Vector2 pos, int dx, int dy)
         {
             try
             {
@@ -68,12 +68,12 @@ namespace PythonRouge.game
 
         }
 
-        public EntityPos findPPos()
+        public Vector2 findPPos()
         {
             foreach (var kvp in grid.Game_map)
                 if (kvp.Value.type == TileType.Floor)
-                    return new EntityPos(kvp.Key.x, kvp.Key.y);
-            return new EntityPos(0, 0);
+                    return new Vector2(kvp.Key.x, kvp.Key.y);
+            return new Vector2(0, 0);
         }
 
         public bool NeighboursIsNotFloor(Vector2 pos)

@@ -9,7 +9,6 @@
 // 
 // You should have received a copy of the GNU General Public License along with this program. If not, see
 // http://www.gnu.org/licenses/.
-using RLNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,38 +17,15 @@ using System.Threading.Tasks;
 
 namespace PythonRouge.game
 {
-    public class Entity
+    static class Pathfinding
     {
-        public Vector2 pos;
-        public int health;
-        public string name;
-        public char symbol;
-
-
-
-        public Entity(Vector2 pos, char symbol, int health, string name)
+        static List<Vector2> offsets = new List<Vector2> { new Vector2(-1, 0), new Vector2(-1, -1), new Vector2(-1, 1), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, -1), new Vector2(1, 0), new Vector2(1, 1) };
+        static List<Vector2> CalcMovement(Vector2 start, Vector2 end, Dictionary<Vector2, Tile> grid)
         {
-            this.pos = pos;
-            this.symbol = symbol;
-            this.health = health;
-            this.name = name;
-        }
-
-        //Move method updates player pos in change of y and x
-        public void move(int dx, int dy)
-        {
-            pos.x += dx;
-            pos.y += dy;
-        }
-
-        public void draw(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, RLColor.White, null, symbol);
-        }
-
-        public void clear(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, null, null, ' ');
+            List<Vector2> open = new List<Vector2>();
+            
+            open.Add(start);
+            return new List<Vector2>();
         }
     }
 }

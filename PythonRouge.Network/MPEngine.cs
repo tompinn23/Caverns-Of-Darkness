@@ -66,7 +66,7 @@ namespace PythonRouge.Network
         public void FinishInit()
         {
             
-            Players[LocalName] = new Player(0, 0, 100, '@', LocalName);
+            Players[LocalName] = new Player(0, 100, 0, '@', LocalName);
             Console.WriteLine("Sending Player info");
             playerConnected();
             InitFin = true;
@@ -181,7 +181,7 @@ namespace PythonRouge.Network
                     if(Players.ContainsKey(name)) Players[name].pos = newPos;
                     else
                     {
-                        Players[name] = new Player(x, y, 100, '@', name);
+                        Players[name] = new Player(x, 100, y, '@', name);
                     }
                     break;
             }

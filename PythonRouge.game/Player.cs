@@ -14,38 +14,11 @@ using RLNET;
 
 namespace PythonRouge.game
 {
-    [Serializable]
-    public class Player
+    public class Player : Entity
     {
-        public char character;
-        private int health;
-        public string name;
-        public EntityPos pos;
-
-        public Player(int x, int y, int health, char character, string name)
+        public Player(Vector2 pos, char symbol, int health, string name) : base(pos, symbol, health, name)
         {
-            pos = new EntityPos(x, y);
-            this.health = health;
-            this.name = name;
-            this.character = character;
-        }
 
-
-        //Move method updates player pos in change of y and x
-        public void move(int dx, int dy)
-        {
-            pos.x += dx;
-            pos.y += dy;
-        }
-
-        public void draw(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, RLColor.White, null, character);
-        }
-
-        public void clear(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, null, null, ' ');
         }
     }
 }

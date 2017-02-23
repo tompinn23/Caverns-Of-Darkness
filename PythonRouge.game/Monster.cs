@@ -18,38 +18,27 @@ using System.Threading.Tasks;
 
 namespace PythonRouge.game
 {
-    public class Entity
+    class Monster : Entity
     {
-        public Vector2 pos;
-        public int health;
-        public string name;
-        public char symbol;
+        public bool seen;
+
+        private float atkMod;
+        private float defMod;
 
 
-
-        public Entity(Vector2 pos, char symbol, int health, string name)
+        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod) : base(pos, symbol, health, name)
         {
-            this.pos = pos;
-            this.symbol = symbol;
-            this.health = health;
-            this.name = name;
+            this.atkMod = atkMod;
+            this.defMod = defMod;
         }
 
-        //Move method updates player pos in change of y and x
-        public void move(int dx, int dy)
+
+
+        private void calcMove()
         {
-            pos.x += dx;
-            pos.y += dy;
+
         }
 
-        public void draw(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, RLColor.White, null, symbol);
-        }
 
-        public void clear(RLConsole console)
-        {
-            console.Set(pos.x, pos.y, null, null, ' ');
-        }
     }
 }

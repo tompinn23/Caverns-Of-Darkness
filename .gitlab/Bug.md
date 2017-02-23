@@ -1,4 +1,4 @@
-## Bug ## 
+## Bug  
 
 Upload relevant logs etc.
 

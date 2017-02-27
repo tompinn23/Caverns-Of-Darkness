@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EpPathFinding.cs">
+      <HintPath>..\PythonRouge\EpPathFinding.cs.dll</HintPath>
+    </Reference>
     <Reference Include="Karcero">
       <HintPath>..\PythonRouge\Karcero.dll</HintPath>
     </Reference>
@@ -49,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Map.Generator.cs" />
     <Compile Include="Colours.cs" />

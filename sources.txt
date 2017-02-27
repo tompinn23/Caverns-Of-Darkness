@@ -1,0 +1,4 @@
+http://www.policyalmanac.org/games/aStarTutorial.htm A* Pathfinding
+http://fadden.com/tech/ShadowCast.cs.txt Recursive ShadowCasting
+https://bitbucket.org/clarktravism/rlnet/ RLNET
+http://www.odedwelgreen.com/karcero/ Karcero

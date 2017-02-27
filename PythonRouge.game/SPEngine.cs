@@ -10,22 +10,29 @@
 // You should have received a copy of the GNU General Public License along with this program. If not, see
 // http://www.gnu.org/licenses/.
 using RLNET;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EpPathFinding.cs;
+using System.Collections.Generic;
 
 namespace PythonRouge.game
 {
-    public class SPEngine
+    public class SPEngine : Engine
     {
         private readonly RLConsole invConsole = new RLConsole(20, 70);
         private readonly Map map = new Map(70, 50);
-
+        BaseGrid searchgrid;
+        JumpPointParam jpParam;
         private readonly RLConsole mapConsole = new RLConsole(70, 50);
 
         private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
         private readonly RLRootConsole rootConsole;
 
         private bool mapLoadDone = false;
+
+        public delegate void MonsterUpdateEventHandler(object sender, EventArgs e);
+        public event MonsterUpdateEventHandler MonsterUpdate;
 
         public SPEngine(RLRootConsole rootConsole)
         {
@@ -54,9 +61,21 @@ namespace PythonRouge.game
                 rootConsole.Draw();
 
             } while(mapLoadDone == false);
-            Pathfinding.CalcMovement(new Vector2(8, 4), new Vector2(14, 30), map.grid.Game_map);
             var pos = map.findPPos();
+            ConstructGrid();
+            jpParam = new JumpPointParam(searchgrid, false, false);
             player.pos = pos;
+        }
+        
+        public void ConstructGrid()
+        {
+            NodePool nodePool = new NodePool();
+            searchgrid = new DynamicGridWPool(nodePool);
+            foreach (Vector2 p in map.grid.Game_map.Keys)
+            {
+                if (map.grid.Game_map[p].type == TileType.Floor) searchgrid.SetWalkableAt(new GridPos(p.X, p.Y), true);
+                else searchgrid.SetWalkableAt(new GridPos(p.X, p.Y), false);
+            }
         }
 
         public void render()
@@ -106,6 +125,9 @@ namespace PythonRouge.game
                         break;
                     case TileType.Empty:
                         mapConsole.Set(pos.X, pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
+                        break;
+                    case TileType.PathTest:
+                        mapConsole.Set(pos.X, pos.Y, RLColor.Yellow, RLColor.Yellow, tile.symbol);
                         break;
                 }
             }
@@ -166,6 +188,15 @@ namespace PythonRouge.game
                     ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                 }
             }
+        }
+
+        public void update()
+        {
+            
+        }
+        protected virtual void OnMonsterUpdate(EventArgs e)
+        {
+            MonsterUpdate?.Invoke(this, e);
         }
     }
 }

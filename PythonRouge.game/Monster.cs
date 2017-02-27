@@ -26,18 +26,16 @@ namespace PythonRouge.game
         private float defMod;
 
 
-        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod) : base(pos, symbol, health, name)
+        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, Engine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
+            engine.
         }
 
 
 
-        private void calcMove()
-        {
-
-        }
+        private 
 
 
     }

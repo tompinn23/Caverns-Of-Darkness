@@ -147,6 +147,7 @@ namespace PythonRouge
                     _spEngine?.handleKey(keypress);
                     _mpEngine?.HandleKey(keypress);
                 }
+                _spEngine?.update();
                 var m = _lobby?.Update(keypress);
                 if(m == 1)
                 {

@@ -19,6 +19,7 @@ namespace PythonRouge.game
     public class Map
     {
         public GameGrid grid;
+        public List<Vector2> openTiles;
 
         public Map(int width, int height, GameGrid grid = null)
         {
@@ -51,7 +52,7 @@ namespace PythonRouge.game
         {
             try
             {
-                if (grid.Game_map[new Vector2(pos.Y + dx, pos.Y + dy)].type == TileType.Wall)
+                if (grid.Game_map[new Vector2(pos.X + dx, pos.Y + dy)].type == TileType.Wall)
                 {
                     return false;
 
@@ -146,6 +147,10 @@ namespace PythonRouge.game
                 }
             }
             setEmpty();
+            foreach(Vector2 p in grid.Game_map.Keys)
+            {
+                if (grid.Game_map[p].type == TileType.Floor) openTiles.Add(p);
+            }
         }
 
     }
@@ -337,6 +342,7 @@ namespace PythonRouge.game
     {
         Floor,
         Wall,
-        Empty
+        Empty,
+        PathTest
     }
 }   

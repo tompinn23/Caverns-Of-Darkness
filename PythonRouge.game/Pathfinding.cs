@@ -17,9 +17,9 @@ using System.Threading.Tasks;
 
 namespace PythonRouge.game
 {
-    public class PathNode
+    public class Node
     {
-        public PathNode parent;
+        public Node parent;
         public Vector2 pos;
         public float H;
         public float G;
@@ -34,8 +34,8 @@ namespace PythonRouge.game
             }
         }
         public bool canWalk;
-        
-        public PathNode(Vector2 pos, bool canWalk)
+
+        public Node(Vector2 pos, bool canWalk)
         {
             parent = null;
             this.pos = pos;
@@ -43,99 +43,137 @@ namespace PythonRouge.game
             G = 1;
             this.canWalk = canWalk;
         }
+    }
 
         public class Astar
         {
-            Dictionary<Vector2, PathNode> grid;
-            int height;
-            int width;
-
-            public Astar(Dictionary<Vector2, Tile> map, int width, int height)
+            List<List<Node>> Grid;
+        int GridRows
             {
-                foreach(KeyValuePair<Vector2, Tile> kvp in map)
+                get
                 {
-                    if(kvp.Value.type != TileType.Floor)
-                    {
-                        grid.Add(kvp.Key, new PathNode(kvp.Key, false));
-                    }
-                    else
-                    {
-                        grid.Add(kvp.Key, new PathNode(kvp.Key, true));
-                    }
+                    return Grid[0].Count;
                 }
-                this.height = height;
-                this.width = width;
+            }
+            int GridCols
+            {
+                get
+                {
+                    return Grid.Count;
+                }
             }
 
-            public Stack<Vector2> CalcPath(Vector2 Start, Vector2 End)
+            public Astar(List<List<Node>> grid)
             {
-                var start = new PathNode(Start, true);
-                var end = new PathNode(End, true);
-                Stack<Vector2> Path = new Stack<Vector2>();
-                List<PathNode> open = new List<PathNode>();
-                List<PathNode> closed = new List<PathNode>();
-                List<PathNode> neighbours;
-                var current = start;
+                Grid = grid;
+            }
 
-                open.Add(start);
-                while (open.Count != 0 && !closed.Exists(x => x.pos == end.pos))
+        public Astar(Dictionary<Vector2, Tile> game_map, int w, int h)
+        {
+            Grid = new List<List<Node>>();
+            for (int y = 0; y < h; y++)
+            {
+                Grid.Add(new List<Node>());
+                for (int x=0; x < w; x++)
                 {
-                    current = open[0];
-                    open.Remove(current);
-                    closed.Add(current);
-                    neighbours = GetNeighbours(current);
-
-                    foreach (PathNode node in neighbours)
+                    var pos = new Vector2(x, y);
+                    switch(game_map[pos].type)
                     {
-                        if (!closed.Contains(node) && node.canWalk)
+                        case TileType.Empty:
+                            Grid[y].Add(new Node(pos, false));
+                            break;
+                        case TileType.Floor:
+                            Grid[y].Add(new Node(pos, true));
+                            break;
+                        case TileType.Wall:
+                            Grid[y].Add(new Node(pos, false));
+                            break;
+                    }
+                }
+            }
+        }
+
+        public Stack<Node> FindPath(Vector2 Start, Vector2 End)
+            {
+                Node start = new Node(new Vector2(Start.X, Start.Y), true);
+                Node end = new Node(new Vector2(End.X, End.Y), true);
+
+                Stack<Node> Path = new Stack<Node>();
+                List<Node> OpenList = new List<Node>();
+                List<Node> ClosedList = new List<Node>();
+                List<Node> adjacencies;
+                Node current = start;
+
+                // add start node to Open List
+                OpenList.Add(start);
+
+                while (OpenList.Count != 0 && !ClosedList.Exists(x => x.pos == end.pos))
+                {
+                    current = OpenList[0];
+                    OpenList.Remove(current);
+                    ClosedList.Add(current);
+                    adjacencies = GetAdjacentNodes(current);
+
+
+                    foreach (Node n in adjacencies)
+                    {
+                        if (!ClosedList.Contains(n) && n.canWalk)
                         {
-                            if(!open.Contains(node))
-                            { 
-                                node.parent = current;
-                                node.H = Math.Abs(node.pos.X - end.pos.X) + Math.Abs(node.pos.Y - end.pos.Y);
-                                node.G = 1 + node.parent.G;
-                                open.Add(node);
-                                open = open.OrderBy(nod => nod.f).ToList<PathNode>();
+                            if (!OpenList.Contains(n))
+                            {
+                                n.parent = current;
+                                n.H = Math.Abs(n.pos.X - end.pos.X) + Math.Abs(n.pos.Y - end.pos.Y);
+                                n.G = 1 + n.parent.G;
+                                OpenList.Add(n);
+                                OpenList = OpenList.OrderBy(node => node.f).ToList<Node>();
                             }
                         }
                     }
                 }
-                if (!closed.Exists(x => x.pos== end.pos))
+
+                // construct path, if end was not closed return null
+                if (!ClosedList.Exists(x => x.pos == end.pos))
                 {
                     return null;
                 }
-                PathNode path = closed[closed.IndexOf(current)];
-                while(path.parent != start && path != null)
+
+                // if all good, return path
+                Node temp = ClosedList[ClosedList.IndexOf(current)];
+                while (temp.parent != start && temp != null)
                 {
-                    Path.Push(path.pos);
-                    path = path.parent;
+                    Path.Push(temp);
+                    temp = temp.parent;
                 }
                 return Path;
             }
 
-            public List<PathNode> GetNeighbours(PathNode n)
+            private List<Node> GetAdjacentNodes(Node n)
             {
-                List<PathNode> neighbours = new List<PathNode>();
-                if(n.pos.X + 1 < height)
+                List<Node> temp = new List<Node>();
+
+                int row = (int)n.pos.Y;
+                int col = (int)n.pos.X;
+
+                if (row + 1 < GridRows)
                 {
-                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                    temp.Add(Grid[col][row + 1]);
                 }
-                if (n.pos.X - 1 >= 0)
+                if (row - 1 >= 0)
                 {
-                    neighbours.Add(grid[new Vector2(n.pos.X - 1, n.pos.Y)]);
+                    temp.Add(Grid[col][row - 1]);
                 }
-                if (n.pos.Y + 1 < width)
+                if (col - 1 >= 0)
                 {
-                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                    temp.Add(Grid[col - 1][row]);
                 }
-                if (n.pos.Y - 1 >= 0)
+                if (col + 1 < GridCols)
                 {
-                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                    temp.Add(Grid[col + 1][row]);
                 }
-                return neighbours;
+
+                return temp;
             }
         }
 
-}
+    }
 
-}

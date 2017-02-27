@@ -25,7 +25,7 @@ using System.Net;
 
 namespace PythonRouge.Network
 {
-    public class MpEngine
+    public class MpEngine : Engine
     {
         public NetClient Client;
         public bool isConnected;

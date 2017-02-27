@@ -45,7 +45,7 @@ namespace PythonRouge.Network
         public bool InitFin = false;
         public bool mapReady = false;
 
-        public MpEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint)
+        public MpEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint) : base(rootConsole)
         {
             this.LocalName = name;
             var config = new NetPeerConfiguration("PythonRouge");
@@ -218,7 +218,7 @@ namespace PythonRouge.Network
         }
 
 
-        public void PreRender()
+        public override void PreRender()
         {
             if (mapReady)
             {
@@ -231,7 +231,7 @@ namespace PythonRouge.Network
             }
         }
 
-        public void PostRender()
+        public override void PostRender()
         {
             foreach (var p in Players.Values)
             {

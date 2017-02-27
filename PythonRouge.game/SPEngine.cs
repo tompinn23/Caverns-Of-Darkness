@@ -31,10 +31,9 @@ namespace PythonRouge.game
 
         private bool mapLoadDone = false;
 
-        public delegate void MonsterUpdateEventHandler(object sender, EventArgs e);
-        public event MonsterUpdateEventHandler MonsterUpdate;
+       
 
-        public SPEngine(RLRootConsole rootConsole)
+        public SPEngine(RLRootConsole rootConsole) : base(rootConsole)
         {
             this.rootConsole = rootConsole;
             mapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
@@ -134,69 +133,11 @@ namespace PythonRouge.game
         }
 
 
-        public void PreRender()
-        {
-            renderMap();
-            player.draw(mapConsole);
-        }
+     
 
-        public void PostRender()
-        {
-            player.clear(mapConsole);
-        }
-
-
-        public void handleKey(RLKeyPress keyPress)
-        {
-            if (keyPress.Key == RLKey.Up)
-            {
-                if (map.canMove(player.pos, 0, -1))
-                {
-                    map.resetLight();
-                    player.move(0, -1);
-                    var pos = new Vector2(player.pos.X, player.pos.Y);
-                    ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                }
-            }
-            else if (keyPress.Key == RLKey.Down)
-            {
-                if (map.canMove(player.pos, 0, 1))
-                {
-                    map.resetLight();
-                    player.move(0, 1);
-                    var pos = new Vector2(player.pos.X, player.pos.Y);
-                    ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                }
-            }
-            else if (keyPress.Key == RLKey.Left)
-            {
-                if (map.canMove(player.pos, -1, 0))
-                {
-                    map.resetLight();
-                    player.move(-1, 0);
-                    var pos = new Vector2(player.pos.X, player.pos.Y);
-                    ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                }
-            }
-            else if (keyPress.Key == RLKey.Right)
-            {
-                if (map.canMove(player.pos, 1, 0))
-                {
-                    map.resetLight();
-                    player.move(1, 0);
-                    var pos = new Vector2(player.pos.X, player.pos.Y);
-                    ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                }
-            }
-        }
-
-        public void update()
+        public override void update()
         {
             
-        }
-        protected virtual void OnMonsterUpdate(EventArgs e)
-        {
-            MonsterUpdate?.Invoke(this, e);
         }
     }
 }

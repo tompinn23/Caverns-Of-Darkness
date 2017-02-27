@@ -99,7 +99,7 @@ namespace PythonRouge.Server
                     var name = msg.ReadString();
                     var x = msg.ReadInt32();
                     var y = msg.ReadInt32();
-                    var newPos = new EntityPos(x, y);
+                    var newPos = new Vector2(x, y);
                     Players[name].pos = newPos;
                     var outMsg = Server.CreateMessage();
                     outMsg.Write(2);
@@ -114,7 +114,7 @@ namespace PythonRouge.Server
                     var name = msg.ReadString();
                     var x = msg.ReadInt32();
                     var y = msg.ReadInt32();
-                    Players[name] = new Player(x, 100, y, '@', name);
+                    Players[name] = new Player(new Vector2(x,y), '@', 100, name);
                     break;
                 }
 

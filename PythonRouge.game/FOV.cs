@@ -69,7 +69,7 @@ namespace PythonRouge.game
             //Debug.Assert(gridPosn.y >= 0 && gridPosn.y < grid.yDim);
 
             // Viewer's cell is always visible.
-            grid.SetLight(gridPosn.x, gridPosn.y, 0.0f);
+            grid.SetLight(gridPosn.X, gridPosn.Y, 0.0f);
 
             // Cast light into cells for each of 8 octants.
             //
@@ -139,8 +139,8 @@ namespace PythonRouge.game
                 {
                     // Translate local coordinates to grid coordinates.  For the various octants
                     // we need to invert one or both values, or swap X for Y.
-                    var gridX = gridPosn.x + xc * txfrm.xx + yc * txfrm.xy;
-                    var gridY = gridPosn.y + xc * txfrm.yx + yc * txfrm.yy;
+                    var gridX = gridPosn.X + xc * txfrm.xx + yc * txfrm.xy;
+                    var gridY = gridPosn.Y + xc * txfrm.yx + yc * txfrm.yy;
 
                     // Range-check the values.  This lets us avoid the slope division for blocks
                     // that are outside the grid.

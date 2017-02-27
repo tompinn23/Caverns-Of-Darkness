@@ -22,7 +22,7 @@ namespace PythonRouge.game
 
         private readonly RLConsole mapConsole = new RLConsole(70, 50);
 
-        private readonly Player player = new Player(0, 100, 0, '@', "Tom");
+        private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
         private readonly RLRootConsole rootConsole;
 
         private bool mapLoadDone = false;
@@ -54,6 +54,7 @@ namespace PythonRouge.game
                 rootConsole.Draw();
 
             } while(mapLoadDone == false);
+            Pathfinding.CalcMovement(new Vector2(8, 4), new Vector2(14, 30), map.grid.Game_map);
             var pos = map.findPPos();
             player.pos = pos;
         }
@@ -93,18 +94,18 @@ namespace PythonRouge.game
                 {
                     case TileType.Floor:
                         if (tile.lit)
-                            mapConsole.Set(pos.x, pos.y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
+                            mapConsole.Set(pos.X, pos.Y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
                         else
-                            mapConsole.Set(pos.x, pos.y, Colours.floor, Colours.floor, tile.symbol);
+                            mapConsole.Set(pos.X, pos.Y, Colours.floor, Colours.floor, tile.symbol);
                         break;
                     case TileType.Wall:
                         if (tile.lit)
-                            mapConsole.Set(pos.x, pos.y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
+                            mapConsole.Set(pos.X, pos.Y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
                         else
-                            mapConsole.Set(pos.x, pos.y, Colours.wall, Colours.wall, tile.symbol);
+                            mapConsole.Set(pos.X, pos.Y, Colours.wall, Colours.wall, tile.symbol);
                         break;
                     case TileType.Empty:
-                        mapConsole.Set(pos.x, pos.y, RLColor.Black, RLColor.Black, tile.symbol);
+                        mapConsole.Set(pos.X, pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
                         break;
                 }
             }
@@ -131,7 +132,7 @@ namespace PythonRouge.game
                 {
                     map.resetLight();
                     player.move(0, -1);
-                    var pos = new Vector2(player.pos.x, player.pos.y);
+                    var pos = new Vector2(player.pos.X, player.pos.Y);
                     ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                 }
             }
@@ -141,7 +142,7 @@ namespace PythonRouge.game
                 {
                     map.resetLight();
                     player.move(0, 1);
-                    var pos = new Vector2(player.pos.x, player.pos.y);
+                    var pos = new Vector2(player.pos.X, player.pos.Y);
                     ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                 }
             }
@@ -151,7 +152,7 @@ namespace PythonRouge.game
                 {
                     map.resetLight();
                     player.move(-1, 0);
-                    var pos = new Vector2(player.pos.x, player.pos.y);
+                    var pos = new Vector2(player.pos.X, player.pos.Y);
                     ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                 }
             }
@@ -161,7 +162,7 @@ namespace PythonRouge.game
                 {
                     map.resetLight();
                     player.move(1, 0);
-                    var pos = new Vector2(player.pos.x, player.pos.y);
+                    var pos = new Vector2(player.pos.X, player.pos.Y);
                     ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                 }
             }

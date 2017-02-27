@@ -17,15 +17,125 @@ using System.Threading.Tasks;
 
 namespace PythonRouge.game
 {
-    static class Pathfinding
+    public class PathNode
     {
-        static List<Vector2> offsets = new List<Vector2> { new Vector2(-1, 0), new Vector2(-1, -1), new Vector2(-1, 1), new Vector2(0, 1), new Vector2(0, -1), new Vector2(1, -1), new Vector2(1, 0), new Vector2(1, 1) };
-        static List<Vector2> CalcMovement(Vector2 start, Vector2 end, Dictionary<Vector2, Tile> grid)
+        public PathNode parent;
+        public Vector2 pos;
+        public float H;
+        public float G;
+        public float f
         {
-            List<Vector2> open = new List<Vector2>();
-            
-            open.Add(start);
-            return new List<Vector2>();
+            get
+            {
+                if (H != -1 && G != -1)
+                    return H + G;
+                else
+                    return -1;
+            }
         }
-    }
+        public bool canWalk;
+        
+        public PathNode(Vector2 pos, bool canWalk)
+        {
+            parent = null;
+            this.pos = pos;
+            H = -1;
+            G = 1;
+            this.canWalk = canWalk;
+        }
+
+        public class Astar
+        {
+            Dictionary<Vector2, PathNode> grid;
+            int height;
+            int width;
+
+            public Astar(Dictionary<Vector2, Tile> map, int width, int height)
+            {
+                foreach(KeyValuePair<Vector2, Tile> kvp in map)
+                {
+                    if(kvp.Value.type != TileType.Floor)
+                    {
+                        grid.Add(kvp.Key, new PathNode(kvp.Key, false));
+                    }
+                    else
+                    {
+                        grid.Add(kvp.Key, new PathNode(kvp.Key, true));
+                    }
+                }
+                this.height = height;
+                this.width = width;
+            }
+
+            public Stack<Vector2> CalcPath(Vector2 Start, Vector2 End)
+            {
+                var start = new PathNode(Start, true);
+                var end = new PathNode(End, true);
+                Stack<Vector2> Path = new Stack<Vector2>();
+                List<PathNode> open = new List<PathNode>();
+                List<PathNode> closed = new List<PathNode>();
+                List<PathNode> neighbours;
+                var current = start;
+
+                open.Add(start);
+                while (open.Count != 0 && !closed.Exists(x => x.pos == end.pos))
+                {
+                    current = open[0];
+                    open.Remove(current);
+                    closed.Add(current);
+                    neighbours = GetNeighbours(current);
+
+                    foreach (PathNode node in neighbours)
+                    {
+                        if (!closed.Contains(node) && node.canWalk)
+                        {
+                            if(!open.Contains(node))
+                            { 
+                                node.parent = current;
+                                node.H = Math.Abs(node.pos.X - end.pos.X) + Math.Abs(node.pos.Y - end.pos.Y);
+                                node.G = 1 + node.parent.G;
+                                open.Add(node);
+                                open = open.OrderBy(nod => nod.f).ToList<PathNode>();
+                            }
+                        }
+                    }
+                }
+                if (!closed.Exists(x => x.pos== end.pos))
+                {
+                    return null;
+                }
+                PathNode path = closed[closed.IndexOf(current)];
+                while(path.parent != start && path != null)
+                {
+                    Path.Push(path.pos);
+                    path = path.parent;
+                }
+                return Path;
+            }
+
+            public List<PathNode> GetNeighbours(PathNode n)
+            {
+                List<PathNode> neighbours = new List<PathNode>();
+                if(n.pos.X + 1 < height)
+                {
+                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                }
+                if (n.pos.X - 1 >= 0)
+                {
+                    neighbours.Add(grid[new Vector2(n.pos.X - 1, n.pos.Y)]);
+                }
+                if (n.pos.Y + 1 < width)
+                {
+                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                }
+                if (n.pos.Y - 1 >= 0)
+                {
+                    neighbours.Add(grid[new Vector2(n.pos.X + 1, n.pos.Y)]);
+                }
+                return neighbours;
+            }
+        }
+
+}
+
 }

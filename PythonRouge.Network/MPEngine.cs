@@ -66,7 +66,7 @@ namespace PythonRouge.Network
         public void FinishInit()
         {
             
-            Players[LocalName] = new Player(0, 100, 0, '@', LocalName);
+            Players[LocalName] = new Player(new Vector2(0,0), '@',100 , LocalName);
             Console.WriteLine("Sending Player info");
             playerConnected();
             InitFin = true;
@@ -105,8 +105,8 @@ namespace PythonRouge.Network
             var msg = Client.CreateMessage();
             msg.Write(2);
             msg.Write(LocalName);
-            msg.Write(Players[LocalName].pos.x);
-            msg.Write(Players[LocalName].pos.y);
+            msg.Write(Players[LocalName].pos.X);
+            msg.Write(Players[LocalName].pos.Y);
             Client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
         }
 
@@ -115,8 +115,8 @@ namespace PythonRouge.Network
             var msg = Client.CreateMessage();
             msg.Write(3);
             msg.Write(LocalName);
-            msg.Write(Players[LocalName].pos.x);
-            msg.Write(Players[LocalName].pos.y);
+            msg.Write(Players[LocalName].pos.X);
+            msg.Write(Players[LocalName].pos.Y);
             Client.SendMessage(msg, NetDeliveryMethod.ReliableOrdered);
 
         }
@@ -177,11 +177,11 @@ namespace PythonRouge.Network
                     var name = msg.ReadString();
                     var x = msg.ReadInt32();
                     var y = msg.ReadInt32();
-                    var newPos = new EntityPos(x, y);
+                    var newPos = new Vector2(x, y);
                     if(Players.ContainsKey(name)) Players[name].pos = newPos;
                     else
                     {
-                        Players[name] = new Player(x, 100, y, '@', name);
+                        Players[name] = new Player(new Vector2(x, y), '@', 100, name);
                     }
                     break;
             }
@@ -198,18 +198,18 @@ namespace PythonRouge.Network
                 {
                     case TileType.Floor:
                         if (tile.lit)
-                            MapConsole.Set(pos.x, pos.y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
                         else
-                            MapConsole.Set(pos.x, pos.y, Colours.floor, Colours.floor, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.floor, Colours.floor, tile.symbol);
                         break;
                     case TileType.Wall:
                         if (tile.lit)
-                            MapConsole.Set(pos.x, pos.y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
                         else
-                            MapConsole.Set(pos.x, pos.y, Colours.wall, Colours.wall, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.wall, Colours.wall, tile.symbol);
                         break;
                     case TileType.Empty:
-                        MapConsole.Set(pos.x, pos.y, RLColor.Black, RLColor.Black, tile.symbol);
+                        MapConsole.Set(pos.X,pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
                         break;
                     default:
                         break;
@@ -227,7 +227,7 @@ namespace PythonRouge.Network
             foreach (var p in Players.Values)
             {
                 if (p == Players[LocalName]) p.draw(MapConsole);
-                else if (map.grid.Game_map[new Vector2(p.pos.x, p.pos.y)].lit == true) p.draw(MapConsole);
+                else if (map.grid.Game_map[new Vector2(p.pos.X, p.pos.Y)].lit == true) p.draw(MapConsole);
             }
         }
 
@@ -249,7 +249,7 @@ namespace PythonRouge.Network
                         if (!map.canMove(Players[LocalName].pos, 0, -1)) return;
                         map.resetLight();
                         Players[LocalName].move(0, -1);
-                        var pos = new Vector2(Players[LocalName].pos.x, Players[LocalName].pos.y);
+                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                         updatePlayer();
                     }
@@ -259,7 +259,7 @@ namespace PythonRouge.Network
                         if (!map.canMove(Players[LocalName].pos, 0, 1)) return;
                         map.resetLight();
                         Players[LocalName].move(0, 1);
-                        var pos = new Vector2(Players[LocalName].pos.x, Players[LocalName].pos.y);
+                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                         updatePlayer();
                     }
@@ -269,7 +269,7 @@ namespace PythonRouge.Network
                         if (!map.canMove(Players[LocalName].pos, -1, 0)) return;
                         map.resetLight();
                         Players[LocalName].move(-1, 0);
-                        var pos = new Vector2(Players[LocalName].pos.x, Players[LocalName].pos.y);
+                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                         updatePlayer();
                     }
@@ -279,7 +279,7 @@ namespace PythonRouge.Network
                         if (!map.canMove(Players[LocalName].pos, 1, 0)) return;
                         map.resetLight();
                         Players[LocalName].move(1, 0);
-                        var pos = new Vector2(Players[LocalName].pos.x, Players[LocalName].pos.y);
+                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
                         updatePlayer();
                     }

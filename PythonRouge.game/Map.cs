@@ -51,7 +51,7 @@ namespace PythonRouge.game
         {
             try
             {
-                if (grid.Game_map[new Vector2(pos.x + dx, pos.y + dy)].type == TileType.Wall)
+                if (grid.Game_map[new Vector2(pos.Y + dx, pos.Y + dy)].type == TileType.Wall)
                 {
                     return false;
 
@@ -72,7 +72,7 @@ namespace PythonRouge.game
         {
             foreach (var kvp in grid.Game_map)
                 if (kvp.Value.type == TileType.Floor)
-                    return new Vector2(kvp.Key.x, kvp.Key.y);
+                    return new Vector2(kvp.Key.X, kvp.Key.Y);
             return new Vector2(0, 0);
         }
 
@@ -92,7 +92,7 @@ namespace PythonRouge.game
             foreach (var offset in offsets)
                 try
                 {
-                    if (grid.Game_map[new Vector2(pos.x + offset.x, pos.y + offset.y)].type ==
+                    if (grid.Game_map[new Vector2(pos.X + offset.X, pos.Y + offset.Y)].type ==
                         TileType.Floor)
                         return false;
                 }
@@ -107,7 +107,7 @@ namespace PythonRouge.game
         public void setEmpty()
         {
             foreach (var kvp in grid.Game_map)
-                if (NeighboursIsNotFloor(new Vector2(kvp.Key.x, kvp.Key.y)))
+                if (NeighboursIsNotFloor(new Vector2(kvp.Key.X, kvp.Key.Y)))
                     kvp.Value.type = TileType.Empty;
         }
 
@@ -181,7 +181,7 @@ namespace PythonRouge.game
             int counter = 0;
             foreach (KeyValuePair<Vector2, Tile> kvp in Game_map)
             {
-                string xy = kvp.Key.x.ToString() + "/" + kvp.Key.y.ToString();
+                string xy = kvp.Key.X.ToString() + "/" + kvp.Key.Y.ToString();
                 string type = null;
                 switch (kvp.Value.type)
                 {
@@ -237,8 +237,8 @@ namespace PythonRouge.game
 
     public struct Vector2
     {
-        public int x;
-        public int y;
+        private int x;
+        private int y;
 
         public int X
         {
@@ -256,6 +256,22 @@ namespace PythonRouge.game
         {
             this.x = x;
             this.y = y;
+        }
+        public static bool operator ==(Vector2 v1, Vector2 v2)
+        {
+            return v1.Equals(v2);
+        }
+        public static bool operator !=(Vector2 v1, Vector2 v2)
+        {
+            return !v1.Equals(v2);
+        }
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }    
 

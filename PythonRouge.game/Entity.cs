@@ -38,18 +38,18 @@ namespace PythonRouge.game
         //Move method updates player pos in change of y and x
         public void move(int dx, int dy)
         {
-            pos.x += dx;
-            pos.y += dy;
+            pos.X += dx;
+            pos.Y += dy;
         }
 
         public void draw(RLConsole console)
         {
-            console.Set(pos.x, pos.y, RLColor.White, null, symbol);
+            console.Set(pos.X, pos.Y, RLColor.White, null, symbol);
         }
 
         public void clear(RLConsole console)
         {
-            console.Set(pos.x, pos.y, null, null, ' ');
+            console.Set(pos.X, pos.Y, null, null, ' ');
         }
     }
 }

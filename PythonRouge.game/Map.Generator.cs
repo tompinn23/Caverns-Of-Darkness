@@ -113,7 +113,7 @@ namespace PythonRouge.game
         }
         public bool isInside(Vector2 pos)
         {
-            if (pos.x > this.x1 && pos.x < this.x2 && pos.y > this.y1 && pos.y < this.y2) return true;
+            if (pos.X> this.x1 && pos.X < this.x2 && pos.Y > this.y1 && pos.Y < this.y2) return true;
             else return false;
         }
     }

@@ -114,7 +114,5 @@ namespace PythonRouge.Network
                 counter++;
             }
         }
-
-
     }
 }

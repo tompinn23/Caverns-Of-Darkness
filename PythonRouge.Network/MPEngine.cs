@@ -25,7 +25,7 @@ using System.Net;
 
 namespace PythonRouge.Network
 {
-    public class MpEngine : Engine
+    public class MpEngine
     {
         public NetClient Client;
         public bool isConnected;
@@ -45,7 +45,7 @@ namespace PythonRouge.Network
         public bool InitFin = false;
         public bool mapReady = false;
 
-        public MpEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint) : base(rootConsole)
+        public MpEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint)
         {
             this.LocalName = name;
             var config = new NetPeerConfiguration("PythonRouge");
@@ -218,7 +218,7 @@ namespace PythonRouge.Network
         }
 
 
-        public override void PreRender()
+        public void PreRender()
         {
             if (mapReady)
             {
@@ -231,7 +231,7 @@ namespace PythonRouge.Network
             }
         }
 
-        public override void PostRender()
+        public void PostRender()
         {
             foreach (var p in Players.Values)
             {

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace PythonRouge.game
 {
-    public class SPEngine : Engine
+    public class SPEngine
     {
         private readonly RLConsole invConsole = new RLConsole(20, 70);
         private readonly Map map = new Map(70, 50);
@@ -31,9 +31,10 @@ namespace PythonRouge.game
 
         private bool mapLoadDone = false;
 
-       
+        public delegate void MonsterUpdateEventHandler(object sender, EventArgs e);
+        public event MonsterUpdateEventHandler MonsterUpdate;
 
-        public SPEngine(RLRootConsole rootConsole) : base(rootConsole)
+        public SPEngine(RLRootConsole rootConsole)
         {
             this.rootConsole = rootConsole;
             mapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
@@ -131,13 +132,77 @@ namespace PythonRouge.game
                 }
             }
         }
+        public void PreRender()
+            {
+                renderMap();
+                player.draw(mapConsole);
+            }
 
+        public void PostRender()
+            {
+                player.clear(mapConsole);
+            }
+
+         public void handleKey(RLKeyPress keyPress)
+        {
+            switch (keyPress.Key)
+            {
+                case RLKey.Up:
+                    {
+                        if (!map.canMove(player.pos, 0, -1)) return;
+                        map.resetLight();
+                        player.move(0, -1);
+                        var pos = new Vector2(player.pos.X, player.pos.Y);
+                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
+                        
+                    }
+                    break;
+                case RLKey.Down:
+                    {
+                        if (!map.canMove(player.pos, 0, 1)) return;
+                        map.resetLight();
+                        player.move(0, 1);
+                        var pos = new Vector2(player.pos.X, player.pos.Y);
+                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
+                        
+                    }
+                    break;
+                case RLKey.Left:
+                    {
+                        if (!map.canMove(player.pos, -1, 0)) return;
+                        map.resetLight();
+                        player.move(-1, 0);
+                        var pos = new Vector2(player.pos.X, player.pos.Y);
+                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
+                        
+                    }
+                    break;
+                case RLKey.Right:
+                    {
+                        if (!map.canMove(player.pos, 1, 0)) return;
+                        map.resetLight();
+                        player.move(1, 0);
+                        var pos = new Vector2(player.pos.X, player.pos.Y);
+                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
+                        
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
 
      
 
-        public override void update()
+        public void update()
         {
-            
+            OnMonsterUpdate(EventArgs.)
         }
+
+        protected virtual void OnMonsterUpdate(EventArgs e)
+        {
+                MonsterUpdate?.Invoke(this, e);
+        }
+
     }
 }

@@ -15,187 +15,117 @@ using System.Threading;
 using System.Threading.Tasks;
 using EpPathFinding.cs;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace PythonRouge.game
 {
-    public class SPEngine
+    public class SPEngine : Engine
     {
-        private readonly RLConsole invConsole = new RLConsole(20, 70);
-        private readonly Map map = new Map(70, 50);
-        BaseGrid searchgrid;
-        JumpPointParam jpParam;
-        private readonly RLConsole mapConsole = new RLConsole(70, 50);
-
         private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
-        private readonly RLRootConsole rootConsole;
-
+        public int monsters = 5;
+        public List<Monster> monsterList = new List<Monster>();
+        public System.Timers.Timer TickTimer = new System.Timers.Timer();
+        
         private bool mapLoadDone = false;
 
-        public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
-        public event MonsterUpdateEventHandler MonsterUpdate;
 
         public SPEngine(RLRootConsole rootConsole)
         {
             this.rootConsole = rootConsole;
-            mapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
-            invConsole.SetBackColor(0, 0, 20, 70, RLColor.Cyan);
-            mapGenerate();
+            MapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
+            InvConsole.SetBackColor(0, 0, 20, 70, RLColor.Cyan);
+            MapGenerate();
             do
             {
                 rootConsole.Clear();
-                mapConsole.Clear();
-                mapConsole.Print(0, 0, "Loading Map",RLColor.White);
-                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                MapConsole.Clear();
+                MapConsole.Print(0, 0, "Loading Map",RLColor.White);
+                RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
                 rootConsole.Draw();
                 Thread.Sleep(200);
-                mapConsole.Print(0, 0, "Loading Map.", RLColor.White);
-                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                MapConsole.Print(0, 0, "Loading Map.", RLColor.White);
+                RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
                 rootConsole.Draw();
                 Thread.Sleep(200);
-                mapConsole.Print(0, 0, "Loading Map..", RLColor.White);
-                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                MapConsole.Print(0, 0, "Loading Map..", RLColor.White);
+                RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
                 rootConsole.Draw();
                 Thread.Sleep(200);
-                mapConsole.Print(0, 0, "Loading Map...", RLColor.White);
-                RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
+                MapConsole.Print(0, 0, "Loading Map...", RLColor.White);
+                RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
                 rootConsole.Draw();
 
             } while(mapLoadDone == false);
+            TickTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnTick);
+            TickTimer.Interval = 200;
+            TickTimer.Enabled = true;
+            AddMonsters();
             var pos = map.findPPos();
             ConstructGrid();
-            jpParam = new JumpPointParam(searchgrid, false, false);
             player.pos = pos;
+            ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f, player.name);
         }
-        
-        public void ConstructGrid()
+
+        private void OnTick(object sender, ElapsedEventArgs e)
         {
-            NodePool nodePool = new NodePool();
-            searchgrid = new DynamicGridWPool(nodePool);
-            foreach (Vector2 p in map.grid.Game_map.Keys)
+            OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos, engine = this });
+        }
+
+        public void AddMonsters()
+        {
+            Random rnd = new Random();
+            for (int i =0; i <= monsters; i++)
             {
-                if (map.grid.Game_map[p].type == TileType.Floor) searchgrid.SetWalkableAt(new GridPos(p.X, p.Y), true);
-                else searchgrid.SetWalkableAt(new GridPos(p.X, p.Y), false);
+                var spawnPos = map.openTiles[rnd.Next(map.openTiles.Count)];
+                var monster = new Monster(spawnPos, 'M', 100, "monster" + i, 1.5f, 1.2f, this);
+                monsterList.Add(monster);
             }
         }
 
-        public void render()
+        public async void MapGenerate()
         {
-            PreRender();
-            RLConsole.Blit(mapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
-            RLConsole.Blit(invConsole, 0, 0, 20, 70, rootConsole, 70, 0);
-            PostRender();
-        }
-
-        public async void mapGenerate()
-        {
-            await doMapGenerate();
+            await DoMapGenerate();
             mapLoadDone = true;
         } 
 
-        public Task doMapGenerate()
+        public Task DoMapGenerate()
         {
             return Task.Run(() =>
             {
                 map.generate();
-
             });
             
         }
 
-        public void renderMap()
+        public override void PreRender()
         {
-            var game_map = map.grid.Game_map;
-            foreach (var kvp in game_map)
+            base.PreRender();
+            player.draw(MapConsole);
+            foreach(Monster m in monsterList)
             {
-                var pos = kvp.Key;
-                var tile = kvp.Value;
-                switch (tile.type)
-                {
-                    case TileType.Floor:
-                        if (tile.lit)
-                            mapConsole.Set(pos.X, pos.Y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
-                        else
-                            mapConsole.Set(pos.X, pos.Y, Colours.floor, Colours.floor, tile.symbol);
-                        break;
-                    case TileType.Wall:
-                        if (tile.lit)
-                            mapConsole.Set(pos.X, pos.Y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
-                        else
-                            mapConsole.Set(pos.X, pos.Y, Colours.wall, Colours.wall, tile.symbol);
-                        break;
-                    case TileType.Empty:
-                        mapConsole.Set(pos.X, pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
-                        break;
-                    case TileType.PathTest:
-                        mapConsole.Set(pos.X, pos.Y, RLColor.Yellow, RLColor.Yellow, tile.symbol);
-                        break;
-                }
-            }
-        }
-        public void PreRender()
-            {
-                renderMap();
-                player.draw(mapConsole);
-            }
-
-        public void PostRender()
-            {
-                player.clear(mapConsole);
-            }
-
-         public void handleKey(RLKeyPress keyPress)
-        {
-            switch (keyPress.Key)
-            {
-                case RLKey.Up:
-                    {
-                        if (!map.canMove(player.pos, 0, -1)) return;
-                        map.resetLight();
-                        player.move(0, -1);
-                        ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f);
-                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
-                    }
-                    break;
-                case RLKey.Down:
-                    {
-                        if (!map.canMove(player.pos, 0, 1)) return;
-                        map.resetLight();
-                        player.move(0, 1);
-                        var pos = new Vector2(player.pos.X, player.pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
-                    }
-                    break;
-                case RLKey.Left:
-                    {
-                        if (!map.canMove(player.pos, -1, 0)) return;
-                        map.resetLight();
-                        player.move(-1, 0);
-                        var pos = new Vector2(player.pos.X, player.pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
-                    }
-                    break;
-                case RLKey.Right:
-                    {
-                        if (!map.canMove(player.pos, 1, 0)) return;
-                        map.resetLight();
-                        player.move(1, 0);
-                        var pos = new Vector2(player.pos.X, player.pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
-                    }
-                    break;
-                default:
-                    break;
+                m.draw(MapConsole);
             }
         }
 
-     
-        protected virtual void OnMonsterUpdate(MonsterUpdateEventArgs e)
+        public override void PostRender()
         {
-                MonsterUpdate?.Invoke(this, e);
+            base.PreRender();
+            player.clear(MapConsole);
+            foreach (Monster m in monsterList)
+            {
+                m.clear(MapConsole);
+            }
         }
 
+        public void update()
+        {
+            //OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos  = player.pos, engine = this});
+        }
+
+        public void HandleKey(RLKeyPress keyPress)
+        {
+            base.HandleKey(keyPress, this.player);
+            OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
+        }
     }
 }

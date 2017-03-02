@@ -41,6 +41,10 @@ namespace PythonRouge.game
             pos.X += dx;
             pos.Y += dy;
         }
+        public void move(Vector2 newPos)
+        {
+            pos = newPos;
+        }
 
         public void draw(RLConsole console)
         {

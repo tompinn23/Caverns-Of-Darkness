@@ -114,5 +114,11 @@ namespace PythonRouge.game
                 counter++;
             }
         }
+
+        public void destroy()
+        {
+            aTimer.Enabled = false;
+            aTimer.Dispose();
+        }
     }
 }

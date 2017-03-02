@@ -63,13 +63,13 @@ namespace PythonRouge.game
         /// <param name="grid">The cell grid definition.</param>
         /// <param name="gridPosn">The player's position within the grid.</param>
         /// <param name="viewRadius">Maximum view distance; can be a fractional value.</param>
-        public static void ComputeVisibility(GameGrid grid, Vector2 gridPosn, float viewRadius)
+        public static void ComputeVisibility(GameGrid grid, Vector2 gridPosn, float viewRadius, string name)
         {
             //Debug.Assert(gridPosn.x >= 0 && gridPosn.x < grid.xDim);
             //Debug.Assert(gridPosn.y >= 0 && gridPosn.y < grid.yDim);
 
             // Viewer's cell is always visible.
-            grid.SetLight(gridPosn.X, gridPosn.Y, 0.0f);
+            grid.SetLight(gridPosn.X, gridPosn.Y, 0.0f, name);
 
             // Cast light into cells for each of 8 octants.
             //
@@ -82,7 +82,7 @@ namespace PythonRouge.game
             // values as four integers rather than an object reference would speed things up.
             // It's much tidier this way though.
             for (var txidx = 0; txidx < s_octantTransform.Length; txidx++)
-                CastLight(grid, gridPosn, viewRadius, 1, 1.0f, 0.0f, s_octantTransform[txidx]);
+                CastLight(grid, gridPosn, viewRadius, 1, 1.0f, 0.0f, s_octantTransform[txidx], name);
         }
 
 
@@ -104,7 +104,7 @@ namespace PythonRouge.game
         /// <param name="txfrm">Coordinate multipliers for the octant transform.</param>
         /// Maximum recursion depth is (Ceiling(viewRadius)).
         private static void CastLight(GameGrid grid, Vector2 gridPosn, float viewRadius,
-            int startColumn, float leftViewSlope, float rightViewSlope, OctantTransform txfrm)
+            int startColumn, float leftViewSlope, float rightViewSlope, OctantTransform txfrm, string name)
         {
             //Debug.Assert(leftViewSlope >= rightViewSlope);
 
@@ -182,10 +182,9 @@ namespace PythonRouge.game
                     //  could reduce iteration at the corners.
                     float distanceSquared = xc * xc + yc * yc;
                     if (distanceSquared <= viewRadiusSq)
-                        grid.SetLight(gridX, gridY, distanceSquared);
+                        grid.SetLight(gridX, gridY, distanceSquared, name);
 
                     var curBlocked = grid.IsWall(gridX, gridY);
-
                     if (prevWasBlocked)
                     {
                         if (curBlocked)
@@ -214,7 +213,7 @@ namespace PythonRouge.game
                             // that here.
                             if (leftBlockSlope <= leftViewSlope)
                                 CastLight(grid, gridPosn, viewRadius, currentCol + 1,
-                                    leftViewSlope, leftBlockSlope, txfrm);
+                                    leftViewSlope, leftBlockSlope, txfrm, name);
 
                             // Once that's done, we keep searching to the right (down the column),
                             // looking for another opening.

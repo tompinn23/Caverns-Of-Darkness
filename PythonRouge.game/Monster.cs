@@ -20,31 +20,83 @@ using EpPathFinding.cs;
 
 namespace PythonRouge.game
 {
-    class Monster : Entity
+    public class Monster : Entity
     {
-        public bool seen;
+        public bool PlayerSeen = false;
 
         private float atkMod;
         private float defMod;
-        private <T> engine;
+
+        private Queue<Vector2> moves = new Queue<Vector2>();
+        List<Vector2> rndMoves = new List<Vector2> { new Vector2(-1,0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1)};
+        Random rnd = new Random();
 
         public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, SPEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
-            this.engine = engine;
-            engine.MonsterUpdate += new SPEngine.MonsterUpdateEventHandler(monsterUpdate);    
+            engine.PlayerMove += new Engine.PlayerMoveEventHandler(playerMoved);
+            engine.MonsterUpdate += new Engine.MonsterUpdateEventHandler(monsterUpdate);
+
         }
-        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, MpEngine engine) : base(pos, symbol, health, name)
+        
+        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, MPEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
-            this.engine = engine;
-            engine.MonsterUpdate += new MpEngine.MonsterUpdateEventHandler(monsterUpdate);
+            engine.PlayerMove += new Engine.PlayerMoveEventHandler(playerMoved);
+            engine.MonsterUpdate += new Engine.MonsterUpdateEventHandler(monsterUpdate);
         }
-        public void monsterUpdate(object sender, MonsterUpdateEventArgs e)
+
+        public void playerMoved(object sender, PlayerMoveEventArgs e)
         {
-            
+            PlayerSeen = canSeePlayer(e.engine.map.mGrid, e.playerPos);
+            if(PlayerSeen)
+            {
+                JumpPointParam jParam = new JumpPointParam(e.engine.searchgrid, false, false);
+                jParam.Reset(new GridPos(pos.X, pos.Y), new GridPos(e.playerPos.X, e.playerPos.Y));
+                List<GridPos> resultPathList = JumpPointFinder.FindPath(jParam);
+                resultPathList = JumpPointFinder.GetFullPath(resultPathList);
+                if(moves.Count != 0)
+                {
+                    moves.Clear();
+                }
+                for(int i =0; i < resultPathList.Count; i++)
+                {
+                    moves.Enqueue(new Vector2(resultPathList[i].x, resultPathList[i].y));
+                }
+            }
+            else
+            {
+                moves.Clear();
+            }
+        }
+
+        private void monsterUpdate(object sender, MonsterUpdateEventArgs e)
+        {
+            if(moves.Count != 0)
+            {
+                var point = moves.Dequeue();
+                move(point);
+            }
+            if(!PlayerSeen)
+            {
+                Vector2 a = rndMoves[rnd.Next(rndMoves.Count)];
+                if (e.engine.map.canMove(pos, a.X, a.Y)) move(a.X, a.Y);
+            }
+        }
+
+        public bool canSeePlayer(GameGrid grid, Vector2 player)
+        {
+            ShadowCast.ComputeVisibility(grid, pos, 7f, name);
+            foreach(Tile t in grid.Game_map.Values)
+            {
+               if(t.lit && t.pos == player && t.discoveredby == name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

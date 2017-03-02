@@ -22,7 +22,7 @@ namespace PythonRouge
         //Initialize variables for engines and controlling rootConsole.
         private static RLRootConsole _rootConsole;
         private static SPEngine _spEngine;
-        private static MpEngine _mpEngine;
+        private static MPEngine _mpEngine;
         public static bool Multi;
         public static bool main = true;
         public static bool opts = false;
@@ -143,16 +143,18 @@ namespace PythonRouge
                 var keypress = _rootConsole.Keyboard.GetKeyPress();
                 if (keypress != null)
                 {
-                    _spEngine?.handleKey(keypress);
+                    _spEngine?.HandleKey(keypress);
                     _mpEngine?.HandleKey(keypress);
                 }
                 var m = _lobby?.Update(keypress);
                 if(m == 1)
                 {
-                    _mpEngine = new MpEngine(_rootConsole, Menu.name, _lobby?.servers[_lobby.sellist[_lobby.curIndex]]);
+                    _mpEngine = new MPEngine(_rootConsole, Menu.name, _lobby?.servers[_lobby.sellist[_lobby.curIndex]]);
+                    _lobby.destroy();
                     _lobby = null;
                 }
                 _mpEngine?.Update();
+                _spEngine?.update();
             }
 
         }

@@ -19,14 +19,18 @@ namespace PythonRouge.game
     public class Map
     {
         public GameGrid grid;
-        public List<Vector2> openTiles;
+        public GameGrid mGrid;
+        public List<Vector2> openTiles = new List<Vector2>();
 
         public Map(int width, int height, GameGrid grid = null)
         {
             mapHeight = height;
             mapWidth = width;
             if (grid == null)
+            {
                 this.grid = new GameGrid(width, height);
+                this.mGrid = new GameGrid(width, height);
+            }
             else
                 this.grid = grid;
             fillMap();
@@ -38,8 +42,13 @@ namespace PythonRouge.game
         public void fillMap()
         {
             for (var x = 0; x < mapWidth; x++)
-            for (var y = 0; y < mapHeight; y++)
-                grid.Game_map[new Vector2(x, y)] = new Tile(x, y, TileType.Wall);
+            {
+                for (var y = 0; y < mapHeight; y++)
+                {
+                    grid.Game_map[new Vector2(x, y)] = new Tile(x, y, TileType.Wall);
+                    mGrid.Game_map[new Vector2(x, y)] = new Tile(x, y, TileType.Wall);
+                }
+            }
         }
 
         public void resetLight()
@@ -65,8 +74,6 @@ namespace PythonRouge.game
             {
                 return false;
             }
-
-
         }
 
         public Vector2 findPPos()
@@ -110,6 +117,9 @@ namespace PythonRouge.game
             foreach (var kvp in grid.Game_map)
                 if (NeighboursIsNotFloor(new Vector2(kvp.Key.X, kvp.Key.Y)))
                     kvp.Value.type = TileType.Empty;
+            foreach (var kvp in mGrid.Game_map)
+                if (NeighboursIsNotFloor(new Vector2(kvp.Key.X, kvp.Key.Y)))
+                    kvp.Value.type = TileType.Empty;
         }
 
         public void generate()
@@ -133,24 +143,35 @@ namespace PythonRouge.game
                         grid.Game_map[pos].blocked = false;
                         grid.Game_map[pos].block_sight = false;
                         grid.Game_map[pos].type = TileType.Floor;
+                        mGrid.Game_map[pos].blocked = false;
+                        mGrid.Game_map[pos].block_sight = false;
+                        mGrid.Game_map[pos].type = TileType.Floor;
                         break;
                     case TerrainType.Floor:
                         grid.Game_map[pos].blocked = false;
                         grid.Game_map[pos].block_sight = false;
                         grid.Game_map[pos].type = TileType.Floor;
+                        mGrid.Game_map[pos].blocked = false;
+                        mGrid.Game_map[pos].block_sight = false;
+                        mGrid.Game_map[pos].type = TileType.Floor;
                         break;
                     case TerrainType.Rock:
                         grid.Game_map[pos].blocked = true;
                         grid.Game_map[pos].block_sight = true;
                         grid.Game_map[pos].type = TileType.Wall;
+                        mGrid.Game_map[pos].blocked = false;
+                        mGrid.Game_map[pos].block_sight = false;
+                        mGrid.Game_map[pos].type = TileType.Floor;
                         break;
                 }
             }
             setEmpty();
+            Console.WriteLine(DateTime.Now);
             foreach(Vector2 p in grid.Game_map.Keys)
             {
                 if (grid.Game_map[p].type == TileType.Floor) openTiles.Add(p);
             }
+            Console.WriteLine(DateTime.Now);
         }
 
     }
@@ -175,9 +196,10 @@ namespace PythonRouge.game
             return Game_map[new Vector2(x, y)].type == TileType.Wall;
         }
 
-        public void SetLight(int x, int y, float disSqrd)
+        public void SetLight(int x, int y, float disSqrd, string discoveredby)
         {
             Game_map[new Vector2(x, y)].lit = true;
+            Game_map[new Vector2(x, y)].discoveredby = discoveredby;
         }
 
         public string mapTostring()
@@ -235,11 +257,9 @@ namespace PythonRouge.game
                 }
             }
         }
-
-
     }
 
-
+    [Serializable]
     public struct Vector2
     {
         private int x;
@@ -284,11 +304,14 @@ namespace PythonRouge.game
     public class Tile
     {
         public char symbol = ' ';
+        public Vector2 pos;
+        public string discoveredby;
 
         public Tile(int x, int y, TileType type)
         {
             this.x = x;
             this.y = y;
+            pos = new Vector2(x, y);
             switch (type)
             {
                 case TileType.Floor:

@@ -25,29 +25,21 @@ using System.Net;
 
 namespace PythonRouge.game
 {
-    public class MpEngine
+    public class MPEngine : Engine
     {
         public NetClient Client;
-        public bool isConnected;
-
-        public RLConsole InvConsole = new RLConsole(20, 70);
-        public Map map;
-
-        public RLConsole MapConsole = new RLConsole(70, 50);
-        
+        public bool isConnected;        
         public Dictionary<string, Player> Players = new Dictionary<string, Player>();
         public string LocalName;
-
         public RLRootConsole RootConsole;
 
-        public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
-        public event MonsterUpdateEventHandler MonsterUpdate;
+
 
         public bool WantMap = true;
         public bool InitFin = false;
         public bool mapReady = false;
 
-        public MpEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint)
+        public MPEngine(RLRootConsole rootConsole, string name, IPEndPoint endpoint) 
         {
             this.LocalName = name;
             var config = new NetPeerConfiguration("PythonRouge");
@@ -180,7 +172,7 @@ namespace PythonRouge.game
                     var x = msg.ReadInt32();
                     var y = msg.ReadInt32();
                     var newPos = new Vector2(x, y);
-                    if(Players.ContainsKey(name)) Players[name].pos = newPos;
+                    if (Players.ContainsKey(name)) Players[name].pos = newPos;
                     else
                     {
                         Players[name] = new Player(new Vector2(x, y), '@', 100, name);
@@ -188,43 +180,12 @@ namespace PythonRouge.game
                     break;
             }
         }
-
-        public void RenderMap()
-        {
-            var game_map = map.grid.Game_map;
-            foreach (var kvp in game_map)
-            {
-                var pos = kvp.Key;
-                var tile = kvp.Value;
-                switch (tile.type)
-                {
-                    case TileType.Floor:
-                        if (tile.lit)
-                            MapConsole.Set(pos.X, pos.Y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
-                        else
-                            MapConsole.Set(pos.X, pos.Y, Colours.floor, Colours.floor, tile.symbol);
-                        break;
-                    case TileType.Wall:
-                        if (tile.lit)
-                            MapConsole.Set(pos.X, pos.Y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
-                        else
-                            MapConsole.Set(pos.X, pos.Y, Colours.wall, Colours.wall, tile.symbol);
-                        break;
-                    case TileType.Empty:
-                        MapConsole.Set(pos.X,pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-
-        public void PreRender()
+ 
+        public override void PreRender()
         {
             if (mapReady)
             {
-                RenderMap();
+                base.renderMap();
             }
             foreach (var p in Players.Values)
             {
@@ -233,7 +194,7 @@ namespace PythonRouge.game
             }
         }
 
-        public void PostRender()
+        public override void PostRender()
         {
             foreach (var p in Players.Values)
             {
@@ -244,61 +205,7 @@ namespace PythonRouge.game
 
         public void HandleKey(RLKeyPress keyPress)
         {
-            switch (keyPress.Key)
-            {
-                case RLKey.Up:
-                    {
-                        if (!map.canMove(Players[LocalName].pos, 0, -1)) return;
-                        map.resetLight();
-                        Players[LocalName].move(0, -1);
-                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        updatePlayer();
-                    }
-                    break;
-                case RLKey.Down:
-                    {
-                        if (!map.canMove(Players[LocalName].pos, 0, 1)) return;
-                        map.resetLight();
-                        Players[LocalName].move(0, 1);
-                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        updatePlayer();
-                    }
-                    break;
-                case RLKey.Left:
-                    {
-                        if (!map.canMove(Players[LocalName].pos, -1, 0)) return;
-                        map.resetLight();
-                        Players[LocalName].move(-1, 0);
-                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        updatePlayer();
-                    }
-                    break;
-                case RLKey.Right:
-                    {
-                        if (!map.canMove(Players[LocalName].pos, 1, 0)) return;
-                        map.resetLight();
-                        Players[LocalName].move(1, 0);
-                        var pos = new Vector2(Players[LocalName].pos.X, Players[LocalName].pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        updatePlayer();
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        protected virtual void OnMonsterUpdate(MonsterUpdateEventArgs e)
-        {
-            MonsterUpdate?.Invoke(this, e);
-        }
-
-        public static implicit operator MpEngine(SPEngine v)
-        {
-            throw new NotImplementedException();
+            base.HandleKey(keyPress, Players[LocalName]);
         }
     }
 }

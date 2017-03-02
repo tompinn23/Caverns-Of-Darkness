@@ -36,6 +36,10 @@
     <Reference Include="Karcero">
       <HintPath>..\PythonRouge\Karcero.dll</HintPath>
     </Reference>
+    <Reference Include="Lidgren.Network, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\PythonRouge\Lidgren.Network.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\PythonRouge\OpenTK.dll</HintPath>
     </Reference>
@@ -53,11 +57,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entity.cs" />
+    <Compile Include="General.cs" />
     <Compile Include="Map.Generator.cs" />
     <Compile Include="Colours.cs" />
     <Compile Include="FOV.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Monster.cs" />
+    <Compile Include="MPEngine.cs" />
+    <Compile Include="MPLobby.cs" />
     <Compile Include="Pathfinding.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

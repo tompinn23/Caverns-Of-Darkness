@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EpPathFinding.cs;
+
 
 namespace PythonRouge.game
 {
@@ -24,20 +26,23 @@ namespace PythonRouge.game
 
         private float atkMod;
         private float defMod;
-
+        private <T> engine;
 
         public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, SPEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
-            engine.MonsterUpdate += new EventHandler(monsterUpdate);    
+            this.engine = engine;
+            engine.MonsterUpdate += new SPEngine.MonsterUpdateEventHandler(monsterUpdate);    
         }
         public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, MpEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
+            this.engine = engine;
+            engine.MonsterUpdate += new MpEngine.MonsterUpdateEventHandler(monsterUpdate);
         }
-        public monsterUpdate(object sender, EventArgs e)
+        public void monsterUpdate(object sender, MonsterUpdateEventArgs e)
         {
             
         }

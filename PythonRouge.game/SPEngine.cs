@@ -31,7 +31,7 @@ namespace PythonRouge.game
 
         private bool mapLoadDone = false;
 
-        public delegate void MonsterUpdateEventHandler(object sender, EventArgs e);
+        public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
         public event MonsterUpdateEventHandler MonsterUpdate;
 
         public SPEngine(RLRootConsole rootConsole)
@@ -152,9 +152,8 @@ namespace PythonRouge.game
                         if (!map.canMove(player.pos, 0, -1)) return;
                         map.resetLight();
                         player.move(0, -1);
-                        var pos = new Vector2(player.pos.X, player.pos.Y);
-                        ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        
+                        ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f);
+                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
                     }
                     break;
                 case RLKey.Down:
@@ -164,7 +163,7 @@ namespace PythonRouge.game
                         player.move(0, 1);
                         var pos = new Vector2(player.pos.X, player.pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        
+                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
                     }
                     break;
                 case RLKey.Left:
@@ -174,7 +173,7 @@ namespace PythonRouge.game
                         player.move(-1, 0);
                         var pos = new Vector2(player.pos.X, player.pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        
+                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
                     }
                     break;
                 case RLKey.Right:
@@ -184,7 +183,7 @@ namespace PythonRouge.game
                         player.move(1, 0);
                         var pos = new Vector2(player.pos.X, player.pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f);
-                        
+                        OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos });
                     }
                     break;
                 default:
@@ -193,13 +192,7 @@ namespace PythonRouge.game
         }
 
      
-
-        public void update()
-        {
-            OnMonsterUpdate(EventArgs.)
-        }
-
-        protected virtual void OnMonsterUpdate(EventArgs e)
+        protected virtual void OnMonsterUpdate(MonsterUpdateEventArgs e)
         {
                 MonsterUpdate?.Invoke(this, e);
         }

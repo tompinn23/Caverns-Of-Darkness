@@ -62,10 +62,6 @@
       <Project>{53141067-e1ee-4834-90e8-ede1334f18e1}</Project>
       <Name>PythonRouge.game</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PythonRouge.Network\PythonRouge.Network.csproj">
-      <Project>{22d6444e-af12-49cc-85ad-da3ef7a2a2d6}</Project>
-      <Name>PythonRouge.Network</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

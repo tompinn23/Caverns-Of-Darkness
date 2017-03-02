@@ -11,7 +11,6 @@
 // http://www.gnu.org/licenses/.
 
 using PythonRouge.game;
-using PythonRouge.Network;
 using RLNET;
 using System;
 using System.IO;
@@ -147,7 +146,6 @@ namespace PythonRouge
                     _spEngine?.handleKey(keypress);
                     _mpEngine?.HandleKey(keypress);
                 }
-                _spEngine?.update();
                 var m = _lobby?.Update(keypress);
                 if(m == 1)
                 {

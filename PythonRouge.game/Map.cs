@@ -21,6 +21,7 @@ namespace PythonRouge.game
         public GameGrid grid;
         public GameGrid mGrid;
         public List<Vector2> openTiles = new List<Vector2>();
+        public List<Vector2> litTiles = new List<Vector2>();
 
         public Map(int width, int height, GameGrid grid = null)
         {
@@ -173,6 +174,18 @@ namespace PythonRouge.game
             }
             Console.WriteLine(DateTime.Now);
         }
+    
+    public void getLitTiles()
+    {
+        
+        foreach(Tile t in grid.Game_map.Values)
+        {
+            if(t.lit)
+            {
+                litTiles.Add(t.pos);
+            }
+        }
+    }
 
     }
 

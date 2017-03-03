@@ -89,14 +89,7 @@ namespace PythonRouge.game
         public bool canSeePlayer(GameGrid grid, Vector2 player)
         {
             ShadowCast.ComputeVisibility(grid, pos, 7f, name);
-            foreach(Tile t in grid.Game_map.Values)
-            {
-               if(t.lit && t.pos == player && t.discoveredby == name)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return grid.Game_map.Any(t => t.Value.lit && t.Value.discoveredby == name);
         }
     }
 }

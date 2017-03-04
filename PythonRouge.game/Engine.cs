@@ -22,11 +22,11 @@ namespace PythonRouge.game
 {
     public class Engine
     {
-        public RLConsole InvConsole = new RLConsole(20, 70);
+        public RLConsole InvConsole = new RLConsole(11, 6);
         public Map map = new Map(70, 50);
         public BaseGrid searchgrid;
         public RLConsole MapConsole = new RLConsole(70, 50);
-
+        public Inventory inv;
         public RLRootConsole rootConsole;
 
         public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
@@ -34,6 +34,7 @@ namespace PythonRouge.game
 
         public delegate void PlayerMoveEventHandler(object sender, PlayerMoveEventArgs e);
         public event PlayerMoveEventHandler PlayerMove;
+        public Random mRnd = new Random();
 
        
 
@@ -51,8 +52,8 @@ namespace PythonRouge.game
         public void render()
         {
             PreRender();
-            RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 10);
-            RLConsole.Blit(InvConsole, 0, 0, 20, 70, rootConsole, 70, 0);
+            RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 0);
+            RLConsole.Blit(InvConsole, 0, 0, 11, 6, rootConsole, 0, 50);
             PostRender();
         }
 
@@ -67,15 +68,15 @@ namespace PythonRouge.game
                 {
                     case TileType.Floor:
                         if (tile.lit)
-                            MapConsole.Set(pos.X, pos.Y, Colours.floor_lit, Colours.floor_lit, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.floor_lit, RLColor.Black, tile.symbol);
                         else
-                            MapConsole.Set(pos.X, pos.Y, Colours.floor, Colours.floor, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.floor, RLColor.Black, tile.symbol);
                         break;
                     case TileType.Wall:
                         if (tile.lit)
-                            MapConsole.Set(pos.X, pos.Y, Colours.wall_lit, Colours.wall_lit, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.wall_lit, RLColor.Black, tile.symbol);
                         else
-                            MapConsole.Set(pos.X, pos.Y, Colours.wall, Colours.wall, tile.symbol);
+                            MapConsole.Set(pos.X, pos.Y, Colours.wall, RLColor.Black, tile.symbol);
                         break;
                     case TileType.Empty:
                         MapConsole.Set(pos.X, pos.Y, RLColor.Black, RLColor.Black, tile.symbol);
@@ -89,6 +90,7 @@ namespace PythonRouge.game
         public virtual void PreRender()
         {
             renderMap();
+            inv?.Draw();
         }
 
         public virtual void PostRender()
@@ -100,7 +102,7 @@ namespace PythonRouge.game
         {
             switch (keyPress.Key)
             {
-                case RLKey.Up:
+                case RLKey.W:
                     {
                         if (!map.canMove(player.pos, 0, -1)) return;
                         map.resetLight();
@@ -109,7 +111,7 @@ namespace PythonRouge.game
                         OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
                     }
                     break;
-                case RLKey.Down:
+                case RLKey.S:
                     {
                         if (!map.canMove(player.pos, 0, 1)) return;
                         map.resetLight();
@@ -119,7 +121,7 @@ namespace PythonRouge.game
                         OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
                     }
                     break;
-                case RLKey.Left:
+                case RLKey.A:
                     {
                         if (!map.canMove(player.pos, -1, 0)) return;
                         map.resetLight();
@@ -129,7 +131,7 @@ namespace PythonRouge.game
                         OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
                     }
                     break;
-                case RLKey.Right:
+                case RLKey.D:
                     {
                         if (!map.canMove(player.pos, 1, 0)) return;
                         map.resetLight();
@@ -137,6 +139,16 @@ namespace PythonRouge.game
                         var pos = new Vector2(player.pos.X, player.pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f, player.name);
                         OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
+                    }
+                    break;
+                case RLKey.Comma:
+                    {
+                        inv?.Move(-1);
+                    }
+                    break;
+                case RLKey.Period:
+                    {
+                        inv?.Move(1);
                     }
                     break;
                 default:

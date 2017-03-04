@@ -16,24 +16,25 @@ using System.Threading.Tasks;
 using EpPathFinding.cs;
 using System.Collections.Generic;
 using System.Timers;
+using System.Diagnostics;
 
 namespace PythonRouge.game
 {
     public class SPEngine : Engine
     {
         private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
-        public int monsters = 5;
+        public int monsters = 4;
         public List<Monster> monsterList = new List<Monster>();
         public System.Timers.Timer TickTimer = new System.Timers.Timer();
-        
-        private bool mapLoadDone = false;
 
+
+        public bool tickDone = true;
+        private bool mapLoadDone = false;
+        
 
         public SPEngine(RLRootConsole rootConsole)
         {
             this.rootConsole = rootConsole;
-            MapConsole.SetBackColor(0, 0, 70, 50, RLColor.Blue);
-            InvConsole.SetBackColor(0, 0, 20, 70, RLColor.Cyan);
             MapGenerate();
             do
             {
@@ -56,19 +57,25 @@ namespace PythonRouge.game
                 rootConsole.Draw();
 
             } while(mapLoadDone == false);
-            TickTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnTick);
+            inv = new Inventory(InvConsole);
+            TickTimer.Elapsed += new ElapsedEventHandler(OnTick);
             TickTimer.Interval = 200;
             TickTimer.Enabled = true;
             AddMonsters();
-            var pos = map.findPPos();
+            player.pos = map.findPPos();
             ConstructGrid();
-            player.pos = pos;
             ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f, player.name);
         }
 
         private void OnTick(object sender, ElapsedEventArgs e)
         {
-            OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos, engine = this });
+            if(tickDone)
+            {
+                tickDone = false;
+                OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos = player.pos, engine = this });
+                tickDone = true;
+            }
+            
         }
 
         public void AddMonsters()
@@ -100,10 +107,11 @@ namespace PythonRouge.game
         public override void PreRender()
         {
             base.PreRender();
+            
             player.draw(MapConsole);
             foreach(Monster m in monsterList)
             {
-                m.draw(MapConsole);
+                if (map.grid.Game_map[m.pos].lit) m.draw(MapConsole);   
             }
         }
 
@@ -117,10 +125,7 @@ namespace PythonRouge.game
             }
         }
 
-        public void update()
-        {
-            //OnMonsterUpdate(new MonsterUpdateEventArgs { playerPos  = player.pos, engine = this});
-        }
+
 
         public void HandleKey(RLKeyPress keyPress)
         {

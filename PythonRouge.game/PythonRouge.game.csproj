@@ -59,6 +59,8 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="General.cs" />
+    <Compile Include="Inventory.cs" />
+    <Compile Include="Items.cs" />
     <Compile Include="Map.Generator.cs" />
     <Compile Include="Colours.cs" />
     <Compile Include="FOV.cs" />

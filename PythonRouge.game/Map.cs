@@ -270,6 +270,14 @@ namespace PythonRouge.game
                 }
             }
         }
+
+        internal void Clear()
+        {
+            foreach(Tile t in Game_map.Values)
+            {
+                t.lit = false;
+            }
+        }
     }
 
     [Serializable]
@@ -316,7 +324,22 @@ namespace PythonRouge.game
     [Serializable]
     public class Tile
     {
-        public char symbol = ' ';
+        public char symbol
+        {
+            get
+            {
+                switch(type)
+                {
+                    case TileType.Empty:
+                        return ' ';
+                    case TileType.Floor:
+                        return '.';
+                    case TileType.Wall:
+                        return '#';
+                }
+                return ' ';
+            }
+        }
         public Vector2 pos;
         public string discoveredby;
 

@@ -30,6 +30,7 @@ namespace PythonRouge.game
         public static RLColor wall_lit = new RLColor(53, 71, 36);
         public static RLColor floor = new RLColor(12, 16, 15);
         public static RLColor wall = new RLColor(38, 57, 19);
-
+        public static RLColor Inventory = new RLColor(188, 198, 214);
+        public static RLColor Inventory_sel = new RLColor(114, 57, 57);
     }
 }

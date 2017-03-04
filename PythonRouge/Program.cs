@@ -74,8 +74,8 @@ namespace PythonRouge
             settings.BitmapFile = Path.GetTempPath() + "rlFontFile.png";
             settings.CharWidth = 8;
             settings.CharHeight = 8;
-            settings.Width = 90;
-            settings.Height = 70;
+            settings.Width = 70;
+            settings.Height = 56;
             settings.Scale = 1f;
             settings.Title = "PythonRouge";
             settings.WindowBorder = RLWindowBorder.Fixed;
@@ -154,7 +154,7 @@ namespace PythonRouge
                     _lobby = null;
                 }
                 _mpEngine?.Update();
-                _spEngine?.update();
+                
             }
 
         }

@@ -25,6 +25,7 @@ namespace PythonRouge.game
         private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
         public int monsters = 4;
         public List<Monster> monsterList = new List<Monster>();
+
         public System.Timers.Timer TickTimer = new System.Timers.Timer();
 
 
@@ -63,6 +64,7 @@ namespace PythonRouge.game
             TickTimer.Enabled = true;
             AddMonsters();
             player.pos = map.findPPos();
+            entityList.Add(player);
             ConstructGrid();
             ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f, player.name);
         }
@@ -84,8 +86,9 @@ namespace PythonRouge.game
             for (int i =0; i <= monsters; i++)
             {
                 var spawnPos = map.openTiles[rnd.Next(map.openTiles.Count)];
-                var monster = new Monster(spawnPos, 'M', 100, "monster" + i, 1.5f, 1.2f, this);
+                var monster = new Monster(spawnPos, 'M', 100, "monster" + i, 1.5f, 1.2f, 500 ,this);
                 monsterList.Add(monster);
+                entityList.Add(monster);
             }
         }
 
@@ -132,5 +135,8 @@ namespace PythonRouge.game
             base.HandleKey(keyPress, this.player);
             OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
         }
+
+
+        
     }
 }

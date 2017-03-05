@@ -48,8 +48,10 @@ namespace PythonRouge.game
             var useSuccess = base.use();
             if(useSuccess)
             {
-
+                target.TakeDamage(atkDamage);
+                return true;
             }
+            return false;
         }
     }
 

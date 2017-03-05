@@ -52,6 +52,32 @@ namespace PythonRouge.game
             }
         }
 
+        public Vector2 getDxDy(Vector2 start, Vector2 end)
+        {
+            int dx;
+            int dy;
+            int d1 = Math.Max(start.X, end.X) - Math.Min(start.X, end.X);
+            int d2 = Math.Max(start.Y, end.Y) - Math.Min(start.Y, end.Y);
+            if(start.X < end.X)
+            {
+                dx = d1;
+            }
+            else
+            {
+                dx = -d1;
+            }
+            if(start.Y < end.Y)
+            {
+                dy = d2;
+            }
+            else
+            {
+                dy = -d2;
+            }
+            return new Vector2(dx, dy);
+        }
+
+
         public void resetLight()
         {
             foreach (var kvp in grid.Game_map)

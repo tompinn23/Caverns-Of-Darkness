@@ -41,6 +41,12 @@ namespace PythonRouge.game
             pos.X += dx;
             pos.Y += dy;
         }
+
+        internal virtual void TakeDamage(float atkDamage)
+        {
+            this.health += (int)Math.Round(atkDamage);
+        }
+
         public void move(Vector2 newPos)
         {
             pos = newPos;

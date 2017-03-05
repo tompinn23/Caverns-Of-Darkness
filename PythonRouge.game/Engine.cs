@@ -28,6 +28,7 @@ namespace PythonRouge.game
         public RLConsole MapConsole = new RLConsole(70, 50);
         public Inventory inv;
         public RLRootConsole rootConsole;
+        public List<Entity> entityList = new List<Entity>();
 
         public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
         public event MonsterUpdateEventHandler MonsterUpdate;
@@ -36,7 +37,19 @@ namespace PythonRouge.game
         public event PlayerMoveEventHandler PlayerMove;
         public Random mRnd = new Random();
 
-       
+        public bool checkEntity(Vector2 start, Vector2 end, int dx, int dy)
+        {
+
+            foreach (Entity e in entityList)
+            {
+                if ((start.X + dx) == end.X && (start.Y + dy) == end.Y)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         public void ConstructGrid()
         {

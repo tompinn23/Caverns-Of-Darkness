@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EpPathFinding.cs;
+using System.Timers;
 
 
 namespace PythonRouge.game
@@ -26,29 +27,55 @@ namespace PythonRouge.game
 
         private float atkMod;
         private float defMod;
+        private int damage = 12;
+        private Timer cooldownTimer = new Timer();
+        private bool ready = true;
 
         private Queue<Vector2> moves = new Queue<Vector2>();
         List<Vector2> rndMoves = new List<Vector2> { new Vector2(-1,0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1)};
         Random rnd;
 
-        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, SPEngine engine) : base(pos, symbol, health, name)
+        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, int cooldown, SPEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
             engine.MonsterUpdate += new Engine.MonsterUpdateEventHandler(monsterUpdate);
             rnd = engine.mRnd;
-
+            cooldownTimer.AutoReset = false;
+            cooldownTimer.Interval = cooldown;
+            cooldownTimer.Elapsed += new ElapsedEventHandler(resetReady);
         }
-        
-        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, MPEngine engine) : base(pos, symbol, health, name)
+
+        private void resetReady(object sender, ElapsedEventArgs e)
+        {
+            ready = true;
+        }
+
+        public Monster(Vector2 pos, char symbol, int health, string name, float atkMod, float defMod, int cooldown, MPEngine engine) : base(pos, symbol, health, name)
         {
             this.atkMod = atkMod;
             this.defMod = defMod;
             engine.MonsterUpdate += new Engine.MonsterUpdateEventHandler(monsterUpdate);
             rnd = engine.mRnd;
+            cooldownTimer.AutoReset = false;
+            cooldownTimer.Interval = cooldown;
+            cooldownTimer.Elapsed += new ElapsedEventHandler(resetReady);
         }
 
-            
+        internal override void TakeDamage(float atkDamage)
+        {
+            base.TakeDamage(atkDamage / defMod);
+        }
+         
+        internal void attack(Player target)
+        {
+            if(ready)
+            {
+                ready = false;
+                target.TakeDamage(damage * atkMod);
+                cooldownTimer.Start();
+            }
+        }
 
         private void monsterUpdate(object sender, MonsterUpdateEventArgs e)
         {
@@ -73,13 +100,21 @@ namespace PythonRouge.game
             }
             if (moves.Count != 0)
             {
-                
-                move(moves.Dequeue());
+                var dxdy = e.engine.map.getDxDy(pos, moves.Dequeue());
+                if (!e.engine.checkEntity(pos, e.playerPos, dxdy.X, dxdy.Y)) move(dxdy.X, dxdy.Y);
             }
             if(PlayerSeen == false)
             {
                 Vector2 a = rndMoves[rnd.Next(rndMoves.Count)];
                 if (e.engine.map.canMove(pos, a.X, a.Y)) move(a.X, a.Y);
+            }
+        }
+
+        public bool isPlayerNear(Vector2 PlayerPos)
+        {
+            foreach(Vector2 p in moves)
+            {
+                if(pos.X + p.X)
             }
         }
 

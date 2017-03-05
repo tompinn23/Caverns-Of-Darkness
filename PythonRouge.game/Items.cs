@@ -38,9 +38,10 @@ namespace PythonRouge.game
     }
     class Weapon : Item
     {
-        public Weapon(char symbol, int cooldown, string name = "Bronze Sword") : base(symbol, cooldown, name)
+        int atkDamage;
+        public Weapon(char symbol, int cooldown, int atkDamage, string name = "Bronze Sword") : base(symbol, cooldown, name)
         {
-            
+            this.atkDamage = atkDamage;  
         }
         public bool use(Entity target)
         {

@@ -26,9 +26,12 @@ namespace PythonRouge.game
         public Map map = new Map(70, 50);
         public BaseGrid searchgrid;
         public RLConsole MapConsole = new RLConsole(70, 50);
+        public RLConsole SideConsole = new RLConsole(20, 56);
+        public SidePanel side;
         public Inventory inv;
         public RLRootConsole rootConsole;
         public List<Entity> entityList = new List<Entity>();
+        public Player player;
 
         public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);
         public event MonsterUpdateEventHandler MonsterUpdate;
@@ -67,6 +70,7 @@ namespace PythonRouge.game
             PreRender();
             RLConsole.Blit(MapConsole, 0, 0, 70, 50, rootConsole, 0, 0);
             RLConsole.Blit(InvConsole, 0, 0, 11, 6, rootConsole, 0, 50);
+            RLConsole.Blit(SideConsole, 0, 0, 21, 96, rootConsole, 71, 0);
             PostRender();
         }
 
@@ -104,6 +108,7 @@ namespace PythonRouge.game
         {
             renderMap();
             inv?.Draw();
+            side?.Draw();
         }
 
         public virtual void PostRender()
@@ -152,6 +157,11 @@ namespace PythonRouge.game
                         var pos = new Vector2(player.pos.X, player.pos.Y);
                         ShadowCast.ComputeVisibility(map.grid, pos, 7.5f, player.name);
                         OnPlayerMove(new PlayerMoveEventArgs { playerPos = player.pos, engine = this });
+                    }
+                    break;
+                case RLKey.Space:
+                    {
+                        player.attack();
                     }
                     break;
                 case RLKey.Comma:

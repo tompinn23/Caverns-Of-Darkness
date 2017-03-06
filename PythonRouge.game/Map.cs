@@ -297,7 +297,7 @@ namespace PythonRouge.game
             }
         }
 
-        internal void Clear()
+        public void Clear()
         {
             foreach(Tile t in Game_map.Values)
             {

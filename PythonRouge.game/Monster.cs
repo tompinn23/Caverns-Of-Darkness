@@ -27,7 +27,7 @@ namespace PythonRouge.game
 
         private float atkMod;
         private float defMod;
-        private int damage = 12;
+        private int damage = 2;
         private Timer cooldownTimer = new Timer();
         private bool ready = true;
 
@@ -62,17 +62,17 @@ namespace PythonRouge.game
             cooldownTimer.Elapsed += new ElapsedEventHandler(resetReady);
         }
 
-        internal override void TakeDamage(float atkDamage)
+        public override void TakeDamage(float atkDamage)
         {
             base.TakeDamage(atkDamage / defMod);
         }
          
-        internal void attack(Player target)
+        public void attack(Player target)
         {
             if(ready)
             {
                 ready = false;
-                target.TakeDamage(damage * atkMod);
+                target.TakeDamage(-(damage * atkMod));
                 cooldownTimer.Start();
             }
         }
@@ -108,14 +108,22 @@ namespace PythonRouge.game
                 Vector2 a = rndMoves[rnd.Next(rndMoves.Count)];
                 if (e.engine.map.canMove(pos, a.X, a.Y)) move(a.X, a.Y);
             }
+            if(isPlayerNear(e.playerPos))
+            {
+                attack(e.engine.player);
+            }
         }
 
         public bool isPlayerNear(Vector2 PlayerPos)
         {
-            foreach(Vector2 p in moves)
+            foreach(Vector2 p in rndMoves)
             {
-                if(pos.X + p.X)
+                if((pos.X + p.X) == PlayerPos.X && (pos.Y + p.Y) == PlayerPos.Y)
+                {
+                    return true;
+                }
             }
+            return false;
         }
 
         public bool canSeePlayer(GameGrid grid, Vector2 player)

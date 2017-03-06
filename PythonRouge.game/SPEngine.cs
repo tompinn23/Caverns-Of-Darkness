@@ -22,7 +22,7 @@ namespace PythonRouge.game
 {
     public class SPEngine : Engine
     {
-        private readonly Player player = new Player(new Vector2(0, 0), '@', 100, "Tom");
+       
         public int monsters = 4;
         public List<Monster> monsterList = new List<Monster>();
 
@@ -35,6 +35,7 @@ namespace PythonRouge.game
 
         public SPEngine(RLRootConsole rootConsole)
         {
+            player = new Player(new Vector2(0, 0), '@', 100, "Tom");
             this.rootConsole = rootConsole;
             MapGenerate();
             do
@@ -59,6 +60,7 @@ namespace PythonRouge.game
 
             } while(mapLoadDone == false);
             inv = new Inventory(InvConsole);
+            side = new SidePanel(SideConsole, player, 21, 96);
             TickTimer.Elapsed += new ElapsedEventHandler(OnTick);
             TickTimer.Interval = 200;
             TickTimer.Enabled = true;
@@ -86,7 +88,7 @@ namespace PythonRouge.game
             for (int i =0; i <= monsters; i++)
             {
                 var spawnPos = map.openTiles[rnd.Next(map.openTiles.Count)];
-                var monster = new Monster(spawnPos, 'M', 100, "monster" + i, 1.5f, 1.2f, 500 ,this);
+                var monster = new Monster(spawnPos, 'M', 100, "monster" + i, 1.5f, 1.2f, 750 ,this);
                 monsterList.Add(monster);
                 entityList.Add(monster);
             }

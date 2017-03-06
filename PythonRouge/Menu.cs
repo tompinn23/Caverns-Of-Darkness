@@ -22,7 +22,7 @@ namespace PythonRouge
     {
         public static string currMenu = "main";
         static bool multiRendered;
-        internal static string name = "";
+        public static string name = "";
 
         public static void mainRender(RLRootConsole _rootConsole)
         {

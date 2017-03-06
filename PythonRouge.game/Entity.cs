@@ -24,7 +24,7 @@ namespace PythonRouge.game
         public int health;
         public string name;
         public char symbol;
-
+        public FacingDirection facing;
 
 
         public Entity(Vector2 pos, char symbol, int health, string name)
@@ -42,16 +42,10 @@ namespace PythonRouge.game
             pos.Y += dy;
         }
 
-        internal virtual void TakeDamage(float atkDamage)
+        public virtual void TakeDamage(float atkDamage)
         {
             this.health += (int)Math.Round(atkDamage);
         }
-
-        public void move(Vector2 newPos)
-        {
-            pos = newPos;
-        }
-
         public void draw(RLConsole console)
         {
             console.Set(pos.X, pos.Y, RLColor.White, null, symbol);
@@ -62,4 +56,12 @@ namespace PythonRouge.game
             console.Set(pos.X, pos.Y, null, null, ' ');
         }
     }
+    public enum FacingDirection
+    {
+        North,
+        East,
+        South,
+        West
+    }
+
 }

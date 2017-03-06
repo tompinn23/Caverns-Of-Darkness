@@ -16,9 +16,17 @@ namespace PythonRouge.game
 {
     public class Player : Entity
     {
+        Weapon Sword;
         public Player(Vector2 pos, char symbol, int health, string name) : base(pos, symbol, health, name)
         {
-
+            Sword = new Weapon((char)234, 450, 12);
         }
+
+        public void attack()
+        {
+            getTarget();
+            Sword.use(target);
+        }
+
     }
 }

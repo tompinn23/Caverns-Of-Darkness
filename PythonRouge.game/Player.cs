@@ -24,8 +24,8 @@ namespace PythonRouge.game
 
         public void attack()
         {
-            getTarget();
-            Sword.use(target);
+           getTarget();
+           Sword.use(target);
         }
 
     }

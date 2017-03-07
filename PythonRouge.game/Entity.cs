@@ -40,6 +40,22 @@ namespace PythonRouge.game
         {
             pos.X += dx;
             pos.Y += dy;
+            if(dx > 0)
+            {
+                facing = FacingDirection.East;
+            }
+            if(dx < 0)
+            {
+                facing = FacingDirection.West;
+            }
+            if(dy > 0)
+            {
+                facing = FacingDirection.North;
+            }
+            if(dy < 0)
+            {
+                facing = FacingDirection.South;
+            }
         }
 
         public virtual void TakeDamage(float atkDamage)
@@ -54,6 +70,14 @@ namespace PythonRouge.game
         public void clear(RLConsole console)
         {
             console.Set(pos.X, pos.Y, null, null, ' ');
+        }
+    }
+
+    public Entity getTarget(Engine engine)
+    {
+        foreach(Entity en in engine.entityList)
+        {
+            if()
         }
     }
     public enum FacingDirection

@@ -77,7 +77,25 @@ namespace PythonRouge.game
     {
         foreach(Entity en in engine.entityList)
         {
-            if()
+            switch(facing)
+            {
+                case FacingDirection.North:
+                    Vector2 newPos = new Vector2(pos.X, pos.Y -1);
+                    if(en.pos == newPos) return en;
+                    break;
+                case FacingDirection.East:
+                    Vector2 newPos = new Vector2(pos.X + 1, pos.Y);
+                    if(en.pos == newPos) return en;
+                    break;
+                case FacingDirection.South:
+                    Vector2 newPos = new Vector2(pos.X, pos.Y +1);
+                    if(en.pos == newPos) return en;
+                    break;
+                case FacingDirection.West:
+                    Vector2 newPos = new Vector2(pos.X -1, pos.Y);
+                    if(en.pos == newPos) return en;
+                    break;
+            }
         }
     }
     public enum FacingDirection

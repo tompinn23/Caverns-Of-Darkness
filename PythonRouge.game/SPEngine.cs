@@ -24,7 +24,7 @@ namespace PythonRouge.game
     {
        
         public int monsters = 4;
-        public List<Monster> monsterList = new List<Monster>();
+        
 
         public System.Timers.Timer TickTimer = new System.Timers.Timer();
 
@@ -35,7 +35,7 @@ namespace PythonRouge.game
 
         public SPEngine(RLRootConsole rootConsole)
         {
-            player = new Player(new Vector2(0, 0), '@', 100, "Tom");
+            player = new Player(new Vector2(0, 0), '@', 100, "Tom", this);
             this.rootConsole = rootConsole;
             MapGenerate();
             do
@@ -60,7 +60,7 @@ namespace PythonRouge.game
 
             } while(mapLoadDone == false);
             inv = new Inventory(InvConsole);
-            side = new SidePanel(SideConsole, player, 21, 96);
+            side = new SidePanel(SideConsole, player, 21, 96, this);
             TickTimer.Elapsed += new ElapsedEventHandler(OnTick);
             TickTimer.Interval = 200;
             TickTimer.Enabled = true;
@@ -69,6 +69,7 @@ namespace PythonRouge.game
             entityList.Add(player);
             ConstructGrid();
             ShadowCast.ComputeVisibility(map.grid, player.pos, 7.5f, player.name);
+            inv.items.Add(new Weapon((char)234, 300, 4));
         }
 
         private void OnTick(object sender, ElapsedEventArgs e)

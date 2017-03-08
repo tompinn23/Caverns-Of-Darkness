@@ -20,14 +20,14 @@ namespace PythonRouge.game
                                                                           new List<Vector2> { new Vector2(4, 2), new Vector2(5, 2), new Vector2(6, 2), new Vector2(4, 3), new Vector2(5, 3), new Vector2(6, 3), new Vector2(4, 4), new Vector2(5, 4), new Vector2(6, 4) },
                                                                           new List<Vector2> { new Vector2(6, 2), new Vector2(7, 2), new Vector2(8, 2), new Vector2(6, 3), new Vector2(7, 3), new Vector2(8, 3), new Vector2(6, 4), new Vector2(7, 4), new Vector2(8, 4) },
                                                                           new List<Vector2> { new Vector2(8, 2), new Vector2(9, 2), new Vector2(10, 2), new Vector2(8, 3), new Vector2(9, 3), new Vector2(10, 3), new Vector2(8, 4), new Vector2(9, 4), new Vector2(10, 4) },};
+        public List<Vector2> slots = new List<Vector2> {new Vector2(1,1), new Vector2(4,1), new Vector2(6,1), new Vector2(8,1), new Vector2(10,1),new Vector2(1,4), new Vector2(4,4), new Vector2(6, 4), new Vector2(8,4), new Vector2(10, 4)};
         private RLConsole console;
         private char[,] charMap = new char[5,11] { { '+', '-', '+', '-', '+', '-', '+', '-', '+', '-', '+' }, 
                                                    { '|', ' ', '|', ' ', '|', ' ', '|', ' ', '|', ' ', '|' },
                                                    { '+', '-', '+', '-', '+', '-', '+', '-', '+', '-', '+' },
                                                    { '|', ' ', '|', ' ', '|', ' ', '|', ' ', '|', ' ', '|' },
-                                                   { '+', '-', '+', '-', '+', '-', '+', '-', '+', '-', '+' }};
-
-
+                                                   { '+', '-', '+', '-', '+', '-', '+', '-', '+', '-', '+' } };
+        public List<Item> items = new List<Item>();
         public Inventory(RLConsole console)
         {
             this.console = console;
@@ -47,12 +47,26 @@ namespace PythonRouge.game
             {
                 console.Set(p.X, p.Y + 1, Colours.Inventory_sel, RLColor.Black, charMap[p.Y, p.X]);
             }
+            for(int i = 0; i < slots.Count; i++)
+            {
+                if(items.ElementAtOrDefault(i) != null)
+                {   
+                    if(items[i] != null)
+                    {
+                        console.Set(slots[i].X, slots[i].Y, RLColor.White, RLColor.Black, items[i].symbol);
+                    }
+                }
+            }
         }
         public void Move(int d)
         {
             if (((selected + d) < 0) || ((selected + d) > 9)) return;
             else selected += d;
-        }        
+        }
+        public Item getItemInCurrentSlot()
+        {
+            return items[selected];
+        }       
 
 
     }

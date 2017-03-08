@@ -14,17 +14,18 @@ using RLNET;
 
 namespace PythonRouge.game
 {
+
     public class Player : Entity
     {
-        Weapon Sword;
-        public Player(Vector2 pos, char symbol, int health, string name) : base(pos, symbol, health, name)
+        Engine engine;
+        public Player(Vector2 pos, char symbol, int health, string name, Engine Engine) : base(pos, symbol, health, name)
         {
-            Sword = new Weapon((char)234, 450, 12);
+            this.engine = engine;
         }
 
         public void attack()
         {
-           Sword.use(getTarget());
+           engine?.inv?.getItemInCurrentSlot().use(getTarget(engine));
         }
 
     }

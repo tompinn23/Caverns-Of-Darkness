@@ -71,31 +71,32 @@ namespace PythonRouge.game
         {
             console.Set(pos.X, pos.Y, null, null, ' ');
         }
-    }
-
-    public Entity getTarget(Engine engine)
-    {
-        foreach(Entity en in engine.entityList)
+        public Entity getTarget(Engine engine)
         {
-            switch(facing)
+            Vector2 newPos;
+            foreach(Entity en in engine.monsterList)
             {
-                case FacingDirection.North:
-                    Vector2 newPos = new Vector2(pos.X, pos.Y -1);
-                    if(en.pos == newPos) return en;
-                    break;
-                case FacingDirection.East:
-                    Vector2 newPos = new Vector2(pos.X + 1, pos.Y);
-                    if(en.pos == newPos) return en;
-                    break;
-                case FacingDirection.South:
-                    Vector2 newPos = new Vector2(pos.X, pos.Y +1);
-                    if(en.pos == newPos) return en;
-                    break;
-                case FacingDirection.West:
-                    Vector2 newPos = new Vector2(pos.X -1, pos.Y);
-                    if(en.pos == newPos) return en;
-                    break;
+                switch(facing)
+                {
+                    case FacingDirection.North:
+                        newPos = new Vector2(pos.X, pos.Y -1);
+                        if(en.pos == newPos) return en;
+                        break;
+                    case FacingDirection.East:
+                        newPos = new Vector2(pos.X + 1, pos.Y);
+                        if(en.pos == newPos) return en;
+                        break;
+                    case FacingDirection.South:
+                        newPos = new Vector2(pos.X, pos.Y +1);
+                        if(en.pos == newPos) return en;
+                        break;
+                    case FacingDirection.West:
+                        newPos = new Vector2(pos.X -1, pos.Y);
+                        if(en.pos == newPos) return en;
+                        break;
+                }
             }
+            return null;
         }
     }
     public enum FacingDirection

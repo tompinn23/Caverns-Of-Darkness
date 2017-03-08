@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Timers;
 namespace PythonRouge.game
 {
-    class Item
+    public class Item
     {
         int cooldown;
-        char symbol;
+        public char symbol;
         Timer cooldownTimer = new Timer();
         bool cooling;
         public Item(char symbol, int cooldown, string name)
@@ -35,6 +35,21 @@ namespace PythonRouge.game
                 return true;
             }
         }
+        public virtual bool use(Entity target)
+        {
+            return use();
+        }
+        public bool use(Entity target, int atkDamage)
+        {
+            var success = use();
+            if(!success) return false;
+            else
+            {
+                target.TakeDamage(atkDamage);
+                return true;
+            }
+
+        }
     }
     class Weapon : Item
     {
@@ -43,15 +58,9 @@ namespace PythonRouge.game
         {
             this.atkDamage = atkDamage;  
         }
-        public bool use(Entity target)
+        public override bool use(Entity target)
         {
-            var useSuccess = base.use();
-            if(useSuccess)
-            {
-                target.TakeDamage(atkDamage);
-                return true;
-            }
-            return false;
+            return base.use(target, atkDamage);
         }
     }
 

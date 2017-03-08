@@ -31,6 +31,7 @@ namespace PythonRouge.game
         public Inventory inv;
         public RLRootConsole rootConsole;
         public List<Entity> entityList = new List<Entity>();
+        public List<Monster> monsterList = new List<Monster>();
         public Player player;
 
         public delegate void MonsterUpdateEventHandler(object sender, MonsterUpdateEventArgs e);

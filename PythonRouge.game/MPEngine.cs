@@ -60,7 +60,7 @@ namespace PythonRouge.game
         public void FinishInit()
         {
             
-            Players[LocalName] = new Player(new Vector2(0,0), '@',100 , LocalName);
+            Players[LocalName] = new Player(new Vector2(0,0), '@',100 , LocalName, this);
             Console.WriteLine("Sending Player info");
             playerConnected();
             InitFin = true;
@@ -175,7 +175,7 @@ namespace PythonRouge.game
                     if (Players.ContainsKey(name)) Players[name].pos = newPos;
                     else
                     {
-                        Players[name] = new Player(new Vector2(x, y), '@', 100, name);
+                        Players[name] = new Player(new Vector2(x, y), '@', 100, name, this);
                     }
                     break;
             }

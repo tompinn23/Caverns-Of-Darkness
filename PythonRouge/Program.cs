@@ -86,7 +86,7 @@ namespace PythonRouge
 
             _rootConsole.Update += rootConsole_Update;
             _rootConsole.Render += rootConsole_Render;
-            _rootConsole.Run();
+            _rootConsole.Run(60);
         }
 
 

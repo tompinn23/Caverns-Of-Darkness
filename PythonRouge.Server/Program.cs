@@ -114,7 +114,7 @@ namespace PythonRouge.Server
                     var name = msg.ReadString();
                     var x = msg.ReadInt32();
                     var y = msg.ReadInt32();
-                    Players[name] = new Player(new Vector2(x,y), '@', 100, name);
+                    Players[name] = new Player(new Vector2(x,y), '@', 100, name, null);
                     break;
                 }
 

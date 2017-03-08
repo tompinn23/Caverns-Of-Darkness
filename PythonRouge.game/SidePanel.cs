@@ -13,13 +13,15 @@ namespace PythonRouge.game
         public Player player;
         public int w;
         public int h;
+        private Engine engine;
 
-        public SidePanel(RLConsole console, Player player, int w, int h)
+        public SidePanel(RLConsole console, Player player, int w, int h, Engine engine)
         {
             this.console = console;
             this.player = player;
             this.w = w;
             this.h = h;
+            this.engine = engine;
         }
         public void Draw()
         {
@@ -34,6 +36,10 @@ namespace PythonRouge.game
             }
             console.Print(1, 4, "Health: ", RLColor.White);
             console.Print(8, 4, player.health.ToString(), RLColor.Red);
+            Entity target = player.getTarget(engine);
+            console.Print(1,8, "Target:", RLColor.White);
+            console.Print(1,9, "Health: ", RLColor.White);
+            console.Print(8,9, target.health.ToString(), RLColor.Red);
         }
     }
 }
